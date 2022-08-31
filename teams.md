@@ -1,0 +1,33 @@
+- Buffalo Bills
+- Miami Dolphins
+- New York Jets
+- New England Patriots
+- Baltimore Ravens
+- Cincinnati Bengals
+- Cleveland Browns
+- Pittsburgh Steelers
+- Houston Texans
+- Indianapolis Colts
+- Jacksonville Jaguars
+- Tennessee Titans
+- Denver Broncos
+- Kansas City Chiefs
+- Los Angeles Chargers
+- Las Vegas Raiders
+
+- Dallas Cowboys
+- New York Giants
+- Philadelphia Eagles
+- Washington Commanders
+- Chicago Bears
+- Detroit Lions
+- Green Bay Packers
+- Minnesota Vikings
+- Atlanta Falcons
+- Carolina Panthers
+- New Orleans Saints
+- Tampa Bay Buccaneers
+- Arizona Cardinals
+- Los Angeles Rams
+- San Francisco 49ers
+- Seattle Seahawks
