@@ -3,8 +3,8 @@ defmodule MaddenDraft.Boundary.PlayerManager do
   alias MaddenDraft.Core.Player
 
   def start_link(opts \\ []) do
-    players = opts[:players] || []
-    GenServer.start_link(__MODULE__, players, name: __MODULE__)
+    state = opts[:players] || []
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   def add_player(server \\ __MODULE__, player_attributes) do
@@ -27,42 +27,50 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     GenServer.call(server, {:update_player, id, attribute, value})
   end
 
-  def init(player_list) do
-    players = player_list
-    {:ok, players}
+  def init(state) do
+    {:ok, state}
   end
 
-  def handle_call(message, from, players)
-
-  def handle_call({:add_player, player_attributes}, _from, players) do
-    attributes = String.split(player_attributes, "-")
-
-    new_player = Player.new(attributes)
-
-    players = Enum.sort([new_player | players], &(&1.round_expected < &2.round_expected))
-
-    {:reply, :ok, players}
+  def reorder_players(state) do
+    Enum.sort(state,  &(&1.round_expected < &2.round_expected))
   end
 
-  def handle_call({:get_player, player_id}, _from, players) do
-    player = Enum.at(players, player_id)
-    {:reply, player, players}
+  def handle_call(message, from, state)
+
+  def handle_call({:add_player, player_attributes}, _from, state) do
+    player_result = player_attributes
+    |> String.split("-")
+    |> Player.new()
+
+    case player_result do
+      {:ok, %Player{} = player } -> {:reply, :ok, [player | state]}
+      error -> {:reply, error, state }
+    end
+
   end
 
-  def handle_call({:get_players}, _from, players) do
-    {:reply, players, players}
+  def handle_call({:get_player, player_id}, _from, state) do
+    player = Enum.at(state, player_id)
+    {:reply, player, state}
   end
 
-  def handle_call({:find_player, by, value}, _from, players) do
-    player = Enum.filter(players, &(Map.get(&1, by) == value))
-    {:reply, player, players}
+  def handle_call({:get_players}, _from, state) do
+    {:reply, state, state}
   end
 
-  def handle_call({:update_player, id, attribute, value}, _from, players) do
+  def handle_call({:find_player, by, value}, _from, state) do
+    player = Enum.filter(state, &(Map.get(&1, by) == value))
+    {:reply, player, state}
+  end
+
+  def handle_call({:update_player, id, attribute, value}, _from, state) do
     player =
-      Enum.at(players, id)
-      |> (&Map.put(&1, attribute, value)).()
+      Enum.at(state, id)
+      |> Player.update(attribute, value)
 
-    {:reply, player, players}
+    case player  do
+      {:ok, player } -> {:reply, player, List.replace_at(state, id, player) }
+      error -> {:reply, error, state }
+    end
   end
 end
