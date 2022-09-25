@@ -10,7 +10,8 @@ defmodule MaddenDraft.Application do
     children = [
       # Starts a worker by calling: MaddenDraft.Worker.start_link(arg)
       # {MaddenDraft.Worker, arg}
-      MaddenDraft.Boundary.PlayerManager
+      MaddenDraft.Boundary.PlayerManager,
+      MaddenDraft.Boundary.BoardManager
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

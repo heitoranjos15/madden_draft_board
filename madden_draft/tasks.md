@@ -7,22 +7,26 @@ I'll List every player I've interest.
 Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 ## Doing
-- [] Board
+- [] Refactor code -- be more functional
 
 ## Backlog
+- [] Show players data
+- [] List player rank by position
+- [] Mark player as drafted
 
 ## Done
 - [x] Player boundary
 - [x] Figure out why validation on object isn't working -- IS working, but not properly
 - [x] Refactor core function to be more functional orriented
 - [x] Combine and skills
+- [x] Validations on change_player_rank
 
 
 ## Board
-- [] Create GenServer for board
-- [] Player process notify player creation to Board process
-- [] List players by rank
-- [] Edit player rank
+- [x] Create GenServer for board
+- [x] Player process notify player creation to Board process
+- [x] List players by rank
+- [x] Edit player rank
 - [] List player rank by position
 - [] Mark player as drafted
 

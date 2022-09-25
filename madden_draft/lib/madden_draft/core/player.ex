@@ -2,6 +2,7 @@ defmodule MaddenDraft.Core.Player do
   alias MaddenDraft.Core.CombineStats
 
   @type t :: %__MODULE__{
+          id: Integer.t(),
           name: String.t(),
           college: String.t(),
           age: Integer.t(),
@@ -16,26 +17,30 @@ defmodule MaddenDraft.Core.Player do
         }
 
   @enforce_keys [
+    :id,
     :name,
     :college,
     :age,
     :round_expected,
     :position
   ]
-  defstruct name: "",
-            college: "",
-            age: 0,
-            round_expected: 1,
-            position: "",
-            height: "",
-            weight: "",
-            skills: %{},
-            type: "",
-            side: "",
-            combine: %{}
 
-  def new(attributes) when not is_map(attributes) do
+  defstruct name: "",
+    id: "",
+    college: "",
+    age: 0,
+    round_expected: 1,
+    position: "",
+    height: "",
+    weight: "",
+    skills: %{},
+    type: "",
+    side: "",
+    combine: %{}
+
+  def new(id, attributes) when not is_map(attributes) do
     new(%{
+      id: id,
       name: Enum.at(attributes, 0),
       college: Enum.at(attributes, 1),
       age: Enum.at(attributes, 2),
