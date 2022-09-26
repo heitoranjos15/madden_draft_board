@@ -1,4 +1,5 @@
 defmodule MaddenDraft.Core.Player do
+  require Logger
   alias MaddenDraft.Core.CombineStats
 
   @type t :: %__MODULE__{
@@ -26,17 +27,17 @@ defmodule MaddenDraft.Core.Player do
   ]
 
   defstruct name: "",
-    id: "",
-    college: "",
-    age: 0,
-    round_expected: 1,
-    position: "",
-    height: "",
-    weight: "",
-    skills: %{},
-    type: "",
-    side: "",
-    combine: %{}
+            id: "",
+            college: "",
+            age: 0,
+            round_expected: 1,
+            position: "",
+            height: "",
+            weight: "",
+            skills: %{},
+            type: "",
+            side: "",
+            combine: %{}
 
   def new(id, attributes) when not is_map(attributes) do
     new(%{
@@ -49,17 +50,28 @@ defmodule MaddenDraft.Core.Player do
     })
   end
 
+  def new(id, attributes) when is_map(attributes) do
+    Map.merge(%{id: id}, attributes) |> inspect |> Logger.debug()
+
+    new(
+      Map.merge(
+        %{id: id, name: "", college: "", age: 0, round_expected: 1, position: ""},
+        attributes
+      )
+    )
+  end
+
   def new(attributes) do
     try do
       {:ok, struct!(__MODULE__, attributes)}
     rescue
-       _ -> 
-        {:error, "invalid player attributes" }
+      _ ->
+        {:error, "invalid player attributes"}
     end
   end
 
   def update(player, _, _) when is_nil(player) do
-    {:error, "player not found" }
+    {:error, "player not found"}
   end
 
   def update(player, attribute, value) do
@@ -73,9 +85,9 @@ defmodule MaddenDraft.Core.Player do
     value
     |> String.split("-")
     |> Enum.map(&String.to_float/1)
-    |> CombineStats.new
+    |> CombineStats.new()
     |> case do
-      {:ok, combine_result } -> Map.put(player, :combine, combine_result)
+      {:ok, combine_result} -> Map.put(player, :combine, combine_result)
       error -> error
     end
   end

@@ -1,7 +1,8 @@
 defmodule MaddenDraft.Boundary.PlayerManager do
   use GenServer
+  require Logger
+
   alias MaddenDraft.Core.Player
-  alias MaddenDraft.Boundary.BoardManager
 
   def start_link(opts \\ []) do
     state = opts[:players] || []
@@ -36,10 +37,6 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     {:ok, state}
   end
 
-  def reorder_players(state) do
-    Enum.sort(state,  &(&1.round_expected < &2.round_expected))
-  end
-
   def handle_call(message, from, state)
 
   def handle_call({:lazy_players}, _from, state) do
@@ -49,32 +46,33 @@ defmodule MaddenDraft.Boundary.PlayerManager do
         ["Trevor Lawrence"],
         ["Zach Wilson"]
       ]
-      { players, _} = Enum.map_reduce(lazy_players, 1, fn lazy_player, acc -> 
-        {_, player } = Player.new(acc, lazy_player)
-        BoardManager.add_player_to_board(player)
-        { player, acc + 1 }
-      end)
+
+      {players, _} =
+        Enum.map_reduce(lazy_players, 1, fn lazy_player, acc ->
+          {_, player} = Player.new(acc, lazy_player)
+          {player, acc + 1}
+        end)
 
       {:reply, :ok, List.flatten(players, state)}
     else
-      {:reply, :already_created, state }
+      {:reply, :already_created, state}
     end
   end
 
   def handle_call({:add_player, player_attributes}, _from, state) do
     player_attributes
-    |> String.split("-")
-    |> (&(Player.new(length(state), &1))).()
-    |> case  do
-      {:ok, %Player{} = player } ->
-        BoardManager.add_player_to_board(player)
-        {:reply, :ok, [player | state]}
-      error -> {:reply, error, state }
-    end
+    |> (&Player.new(length(state), &1)).()
+    |> case do
+      {:ok, %Player{} = player} ->
+        {:reply, player, [player | state]}
 
+      error ->
+        {:reply, error, state}
+    end
   end
 
-  def handle_call({:get_player, player_id}, _from, state) do # Maybe delete this
+  # Maybe delete this
+  def handle_call({:get_player, player_id}, _from, state) do
     player = Enum.at(state, player_id)
     {:reply, player, state}
   end
@@ -84,7 +82,7 @@ defmodule MaddenDraft.Boundary.PlayerManager do
   end
 
   def handle_call({:find_player, by, value}, _from, state) do
-    player = Enum.filter(state, &(Map.get(&1, by) == value))
+    player = Enum.find(state, &(Map.get(&1, by) == value))
     {:reply, player, state}
   end
 
@@ -93,9 +91,9 @@ defmodule MaddenDraft.Boundary.PlayerManager do
       Enum.at(state, id)
       |> Player.update(attribute, value)
 
-    case player  do
-      {:ok, player } -> {:reply, player, List.replace_at(state, id, player) }
-      error -> {:reply, error, state }
+    case player do
+      {:ok, player} -> {:reply, player, List.replace_at(state, id, player)}
+      error -> {:reply, error, state}
     end
   end
 end

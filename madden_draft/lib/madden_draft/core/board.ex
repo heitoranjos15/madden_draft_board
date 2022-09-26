@@ -7,27 +7,27 @@ defmodule MaddenDraft.Core.Board do
           player_id: Integer.t(),
           rank: Integer.t(),
           status: Atom.t(),
-          player: Player.t(),
+          player: Player.t()
         }
   @enforce_keys [:player_id, :rank, :status]
 
   defstruct player_id: 0,
-    rank: 0,
-    status: :available,
-    player: %Player{
-      id: "",
-      name: "",
-      college: "",
-      age: "",
-      round_expected: "",
-      position: ""
-    }
+            rank: 0,
+            status: :available,
+            player: %Player{
+              id: "",
+              name: "",
+              college: "",
+              age: "",
+              round_expected: "",
+              position: ""
+            }
 
   def new(attributes) do
     try do
-      {:ok, struct!(__MODULE__, attributes) }
+      {:ok, struct!(__MODULE__, attributes)}
     rescue
-      _ -> {:error, "invalid player rank" }
+      _ -> {:error, "invalid player rank"}
     end
   end
 
@@ -35,10 +35,10 @@ defmodule MaddenDraft.Core.Board do
     player_board = find_board_player_by(board, :player_id, player)
 
     try do
-      board_updated = make_board_switches(board, player_board, choose) 
+      board_updated = make_board_switches(board, player_board, choose)
       {:ok, board_updated}
     rescue
-      error -> {:error, error.message }
+      error -> {:error, error.message}
     end
   end
 
@@ -46,6 +46,7 @@ defmodule MaddenDraft.Core.Board do
     player_choose_rank = player_board.rank
 
     valid = validate_choose(choose, length(board), player_choose_rank)
+
     if not valid do
       raise ArgumentError, "invalid player choose"
     end
@@ -72,22 +73,30 @@ defmodule MaddenDraft.Core.Board do
     board
     |> Enum.map(fn player_board ->
       cond do
-        player_board.rank == player_choose_rank -> Map.put(player_board, :rank, player_switch_rank)
-        player_board.rank == player_switch_rank -> Map.put(player_board, :rank, player_choose_rank)
-        true -> player_board
+        player_board.rank == player_choose_rank ->
+          Map.put(player_board, :rank, player_switch_rank)
+
+        player_board.rank == player_switch_rank ->
+          Map.put(player_board, :rank, player_choose_rank)
+
+        true ->
+          player_board
       end
     end)
     |> sort_board_by
   end
 
   defp get_player_switch_rank(choose, player_rank) do
-    rank = case choose do
-      :up -> player_rank - 1
-      :down -> player_rank + 1
-    end
+    rank =
+      case choose do
+        :up -> player_rank - 1
+        :down -> player_rank + 1
+      end
+
     if rank < 0 do
       raise ArgumentError, "invalid player rank"
     end
+
     rank
   end
 
@@ -102,5 +111,4 @@ defmodule MaddenDraft.Core.Board do
   def sort_board_by(board, :age) do
     Enum.sort(board, &(&1.player.age < &2.player.age))
   end
-
 end

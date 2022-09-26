@@ -7,10 +7,8 @@ I'll List every player I've interest.
 Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 ## Doing
-- [] Refactor code -- be more functional
 
 ## Backlog
-- [] Show players data
 - [] List player rank by position
 - [] Mark player as drafted
 
@@ -20,6 +18,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Refactor core function to be more functional orriented
 - [x] Combine and skills
 - [x] Validations on change_player_rank
+- [x] Refactor code -- be more functional
+- [x] Show players data
 
 
 ## Board
