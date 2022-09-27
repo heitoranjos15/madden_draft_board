@@ -17,10 +17,6 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     GenServer.call(server, {:get_players})
   end
 
-  def get_player(server \\ __MODULE__, player_name) do
-    GenServer.call(server, {:get_player, player_name})
-  end
-
   def find_player(server \\ __MODULE__, by, value) do
     GenServer.call(server, {:find_player, by, value})
   end
@@ -29,35 +25,11 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     GenServer.call(server, {:update_player, id, attribute, value})
   end
 
-  def lazy_players(server \\ __MODULE__) do
-    GenServer.call(server, {:lazy_players})
-  end
-
   def init(state) do
     {:ok, state}
   end
 
   def handle_call(message, from, state)
-
-  def handle_call({:lazy_players}, _from, state) do
-    if length(state) == 0 do
-      lazy_players = [
-        ["Trey Lance"],
-        ["Trevor Lawrence"],
-        ["Zach Wilson"]
-      ]
-
-      {players, _} =
-        Enum.map_reduce(lazy_players, 1, fn lazy_player, acc ->
-          {_, player} = Player.new(acc, lazy_player)
-          {player, acc + 1}
-        end)
-
-      {:reply, :ok, List.flatten(players, state)}
-    else
-      {:reply, :already_created, state}
-    end
-  end
 
   def handle_call({:add_player, player_attributes}, _from, state) do
     player_attributes
@@ -69,12 +41,6 @@ defmodule MaddenDraft.Boundary.PlayerManager do
       error ->
         {:reply, error, state}
     end
-  end
-
-  # Maybe delete this
-  def handle_call({:get_player, player_id}, _from, state) do
-    player = Enum.at(state, player_id)
-    {:reply, player, state}
   end
 
   def handle_call({:get_players}, _from, state) do

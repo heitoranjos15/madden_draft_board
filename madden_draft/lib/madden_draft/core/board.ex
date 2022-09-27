@@ -7,7 +7,8 @@ defmodule MaddenDraft.Core.Board do
           player_id: Integer.t(),
           rank: Integer.t(),
           status: Atom.t(),
-          player: Player.t()
+          player: Player.t(),
+          drafted_by: String.t()
         }
   @enforce_keys [:player_id, :rank, :status]
 
@@ -21,7 +22,8 @@ defmodule MaddenDraft.Core.Board do
               age: "",
               round_expected: "",
               position: ""
-            }
+            },
+            drafted_by: ""
 
   def new(attributes) do
     try do
@@ -111,4 +113,9 @@ defmodule MaddenDraft.Core.Board do
   def sort_board_by(board, :age) do
     Enum.sort(board, &(&1.player.age < &2.player.age))
   end
+
+  def search_board_player_by(board, :rank, value), do: Enum.filter(board, &(&1.rank == value)) |> sort_board_by
+  def search_board_player_by(board, :status, value), do: Enum.filter(board, &(&1.status == value)) |> sort_board_by
+  def search_board_player_by(board, :drafted_by, value), do: Enum.filter(board, &(&1.drafted_by == value)) |> sort_board_by
+  def search_board_player_by(board, filter, value), do: Enum.filter(board, &(Map.get(&1.player, filter) == value)) |> sort_board_by
 end

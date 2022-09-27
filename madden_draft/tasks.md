@@ -9,8 +9,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 ## Doing
 
 ## Backlog
-- [] List player rank by position
-- [] Mark player as drafted
+- [] Make board as Dynamic supervisor
+- [] Think about the UI
 
 ## Done
 - [x] Player boundary
@@ -20,24 +20,12 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Validations on change_player_rank
 - [x] Refactor code -- be more functional
 - [x] Show players data
+- [x] List player rank by position
+- [x] Mark player as drafted
 
 
-## Board
-- [x] Create GenServer for board
-- [x] Player process notify player creation to Board process
-- [x] List players by rank
-- [x] Edit player rank
-- [] List player rank by position
-- [] Mark player as drafted
 
-### Player
-- [x] Save player 
-- [x] List all players 
-- [x] Search for name
-- [x] List all players by position
-- [x] List all players by round
-- [x] Order list by round
-- [x] Upsert player attribute
-- [x] Skills core functions
-- [x] Combine core functions
+## UI candidates
+https://github.com/ndreynolds/ratatouille
+https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html
 

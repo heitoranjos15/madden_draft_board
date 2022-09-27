@@ -27,6 +27,14 @@ defmodule MaddenDraft.Boundary.BoardManager do
     GenServer.call(server, {:player_rank, player_id, choose})
   end
 
+  def show_players_filter(server \\ __MODULE__, filter, value) do
+    GenServer.call(server, {:show_players_filter, filter, value})
+  end
+
+  def player_drafted(server \\ __MODULE__, player_id, drafted_by) do
+    GenServer.call(server, {:player_drafted, player_id, drafted_by})
+  end
+
   def init(state) do
     {:ok, state}
   end
@@ -54,13 +62,13 @@ defmodule MaddenDraft.Boundary.BoardManager do
         },
         %{name: "David Mills", age: 24, position: "QB", round_expected: 4, college: "Stanford"}
       ]
-      |> Enum.map(&upsert_player_board(&1))
-      |> Enum.map_reduce(0, fn player, acc -> 
-        player_data = %{player_id: player.id, rank: acc, status: :available }
-        { player_data, acc + 1 }
+      |> Enum.map(&find_or_create_player(&1))
+      |> Enum.map_reduce(0, fn player, acc ->
+        player_data = %{player_id: player.id, rank: acc, status: :available}
+        {player_data, acc + 1}
       end)
-      |> fn { players, _acc } -> players end.()
-      |> Enum.map(fn player -> 
+      |> (fn {players, _acc} -> players end).()
+      |> Enum.map(fn player ->
         case Board.new(player) do
           {:ok, board_player} -> board_player
         end
@@ -70,12 +78,12 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   def handle_call({:add_player_to_board, player}, _from, state) do
-    player_data = upsert_player_board(player)
+    player_data = find_or_create_player(player)
 
     player_data
     |> inspect()
     |> Logger.debug()
-    
+
     attributes = %{player_id: player_data.id, rank: length(state), status: :available}
 
     attributes
@@ -87,14 +95,7 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   def handle_call({:show}, _from, state) do
-    state_with_player =
-      state
-      |> Enum.map(fn board_player ->
-        player_data = PlayerManager.find_player(:id, board_player.player_id)
-        Map.put(board_player, :player, player_data)
-      end)
-
-    {:reply, state_with_player, state}
+    {:reply, get_player_data(state), state}
   end
 
   def handle_call({:player_rank, player_id, choose}, _from, state) do
@@ -106,7 +107,28 @@ defmodule MaddenDraft.Boundary.BoardManager do
     end
   end
 
-  defp upsert_player_board(player_attributes) do
+  def handle_call({:show_players_filter, filter, value}, _from, state) do
+    players =
+      get_player_data(state)
+      |> Board.search_board_player_by(filter, value)
+
+    {:reply, players, state}
+  end
+
+  def handle_call({:player_drafted, player_id, drafted_by}, _from, state) do
+    updated_board =
+      state
+      |> Enum.find_index(fn player -> player.player_id == player_id end)
+      |> (&List.replace_at(
+            state,
+            &1,
+            Map.merge(Enum.at(state, &1), %{drafted_by: drafted_by, status: :drafted})
+          )).()
+
+    {:reply, :ok, updated_board}
+  end
+
+  defp find_or_create_player(player_attributes) do
     player_data = PlayerManager.find_player(:name, player_attributes.name)
 
     if player_data do
@@ -114,5 +136,14 @@ defmodule MaddenDraft.Boundary.BoardManager do
     else
       PlayerManager.add_player(player_attributes)
     end
+  end
+
+  defp get_player_data(board) do
+    set_player_data_fun = fn board_player ->
+      player_data = PlayerManager.find_player(:id, board_player.player_id)
+      Map.put(board_player, :player, player_data)
+    end
+
+    Enum.map(board, set_player_data_fun)
   end
 end
