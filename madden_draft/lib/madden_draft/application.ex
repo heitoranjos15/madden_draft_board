@@ -11,7 +11,8 @@ defmodule MaddenDraft.Application do
       # Starts a worker by calling: MaddenDraft.Worker.start_link(arg)
       # {MaddenDraft.Worker, arg}
       MaddenDraft.Boundary.PlayerManager,
-      MaddenDraft.Boundary.BoardManager
+      {Registry, [keys: :unique, name: MaddenDraft.BoardRegistry]},
+      MaddenDraft.Boundary.DraftSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

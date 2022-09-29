@@ -9,7 +9,6 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 ## Doing
 
 ## Backlog
-- [] Make board as Dynamic supervisor
 - [] Think about the UI
 
 ## Done
@@ -22,6 +21,7 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Show players data
 - [x] List player rank by position
 - [x] Mark player as drafted
+- [x] Make board as Dynamic supervisor
 
 
 

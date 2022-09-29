@@ -6,33 +6,32 @@ defmodule MaddenDraft.Boundary.BoardManager do
   alias MaddenDraft.Core.Board
   alias MaddenDraft.Boundary.PlayerManager
 
-  def start_link(opts \\ []) do
-    state = opts[:players] || []
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, [], name: server(name))
   end
 
-  def lazy_player(server \\ __MODULE__) do
-    GenServer.cast(server, {:lazy_player})
+  def lazy_player(name) do
+    GenServer.cast(server(name), {:lazy_player})
   end
 
-  def add_player_to_board(server \\ __MODULE__, player) do
-    GenServer.call(server, {:add_player_to_board, player})
+  def add_player_to_board(name, player) do
+    GenServer.call(server(name), {:add_player_to_board, player})
   end
 
-  def show(server \\ __MODULE__) do
-    GenServer.call(server, {:show})
+  def show(name) do
+    GenServer.call(server(name), {:show})
   end
 
-  def player_rank(server \\ __MODULE__, player_id, choose) do
-    GenServer.call(server, {:player_rank, player_id, choose})
+  def player_rank(name, player_id, choose) do
+    GenServer.call(server(name), {:player_rank, player_id, choose})
   end
 
-  def show_players_filter(server \\ __MODULE__, filter, value) do
-    GenServer.call(server, {:show_players_filter, filter, value})
+  def show_players_filter(name, filter, value) do
+    GenServer.call(server(name), {:show_players_filter, filter, value})
   end
 
-  def player_drafted(server \\ __MODULE__, player_id, drafted_by) do
-    GenServer.call(server, {:player_drafted, player_id, drafted_by})
+  def player_drafted(name, player_id, drafted_by) do
+    GenServer.call(server(name), {:player_drafted, player_id, drafted_by})
   end
 
   def init(state) do
@@ -145,5 +144,11 @@ defmodule MaddenDraft.Boundary.BoardManager do
     end
 
     Enum.map(board, set_player_data_fun)
+  end
+
+  defp server(pid) when is_pid(pid), do: pid
+
+  defp server(name) do
+    {:via, Registry, {MaddenDraft.BoardRegistry, name}}
   end
 end
