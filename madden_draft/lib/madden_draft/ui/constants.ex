@@ -10,5 +10,5 @@ defmodule MaddenDraft.View.Constants do
     do: current_tab_fields(current_tab)
 
   def current_tab_fields(current_tab),
-    do: @form_fields |> Map.get(current_tab)
+    do: @form_fields |> Map.get(current_tab, [])
 end

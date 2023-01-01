@@ -4,7 +4,7 @@ defmodule MaddenDraft.View.App do
   import Ratatouille.View
   import Ratatouille.Runtime.Command
 
-  import MaddenDraft.View.Helpers.Shortcuts
+  alias MaddenDraft.View.Helpers.Bindings
 
   alias MaddenDraft.View.Components.{
     Bars,
@@ -50,7 +50,7 @@ defmodule MaddenDraft.View.App do
         TextMode.render_text(model, message)
 
       {_, {:event, %{key: key, ch: ch}}} ->
-        shortcuts(model, key, ch)
+        Bindings.run(model, key, ch)
 
       _ ->
         model

@@ -1,4 +1,4 @@
-defmodule MaddenDraft.View.Helpers.Shortcuts do
+defmodule MaddenDraft.View.Helpers.Bindings do
   import Ratatouille.Constants, only: [key: 1]
   alias MaddenDraft.View.Components.Cursor
 
@@ -22,6 +22,8 @@ defmodule MaddenDraft.View.Helpers.Shortcuts do
         }},
        {:add_board,
         %{
+          ?h => {:tab, :home},
+          ?s => {:tab, :search_board},
           ?a => {:text_mode, :start},
           ?c => {:text_mode, :clean},
           ?w => :save,
@@ -30,7 +32,7 @@ defmodule MaddenDraft.View.Helpers.Shortcuts do
      ]}
   ]
 
-  def shortcuts(model, key, ch) do
+  def run(model, key, ch) do
     page = Map.get(model, :page)
 
     tab_command =
