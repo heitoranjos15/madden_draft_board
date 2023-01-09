@@ -6,11 +6,9 @@ To make both board Horizontal and Vertical works ok.
 I'll List every player I've interest.
 Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
-## Doing
-- [] Keybindings to save form information
 
-## Backlog
-- [] Send information to Board process
+## Tasks
+- [*] Figure out how forms are gonna be used, right now we have duplicate codes
 - [] Dynamic columns size for Forms
 - [] Make madden draft page
 
@@ -32,6 +30,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Refactor Text utils
 - [x] Make a cursor module to control which field to fill
 - [x] Refactor Form module - Build page dynamic
+- [x] Keybinding to save form information
+- [x] Send information to Board process
 
 
 ## Columns size
@@ -39,6 +39,14 @@ Right now columns for form page can only have a size of 12
 We need to create a way to make this columns customized
 
 
+## Testing
+Test OTP directly
+```
+$ iex -S mix
+$ MaddenDraft.Boundary.DraftSupervisor.create_board('2022')
+$ MaddenDraft.Boundary.BoardManager.lazy_players('2022')
+$ MaddenDraft.Boundary.BoardManager.show('2022')
+```
 
 ## UI candidates
 https://github.com/ndreynolds/ratatouille

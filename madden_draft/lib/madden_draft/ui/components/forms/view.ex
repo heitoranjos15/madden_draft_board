@@ -1,4 +1,4 @@
-defmodule MaddenDraft.View.Components.Form do
+defmodule MaddenDraft.View.Components.Form.View do
   @behaviour Ratatouille.App
 
   import Ratatouille.View
@@ -11,7 +11,6 @@ defmodule MaddenDraft.View.Components.Form do
     end
   end
 
-  ## TRYING TO DO DYNAMIC FORMS
   def form_fields() do
     %{
       title: "Add Board",
@@ -49,8 +48,6 @@ defmodule MaddenDraft.View.Components.Form do
             end
           end
         end
-
-        label(content: get_in(model, [:form_data, :status]))
       end
     end
   end

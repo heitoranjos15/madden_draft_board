@@ -30,7 +30,8 @@ defmodule MaddenDraft.View.App do
           team: "",
           team_needs: "",
           picks: ""
-        }
+        },
+        status: "unsaved"
       },
       text_value: "",
       cursor: %{
@@ -74,4 +75,4 @@ defmodule MaddenDraft.View.App do
   end
 end
 
-Ratatouille.run(MaddenDraft.View.App)
+# Ratatouille.run(MaddenDraft.View.App)

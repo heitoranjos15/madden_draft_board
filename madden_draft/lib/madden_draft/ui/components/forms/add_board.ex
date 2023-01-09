@@ -1,17 +1,12 @@
-defmodule MaddenDraft.View.Components.Form do
+defmodule MaddenDraft.View.Components.Form.AddBoard do
   @behaviour Ratatouille.App
 
   import Ratatouille.View
 
   alias MaddenDraft.View.Helpers.Styles
+  alias MaddenDraft.Boundary.DraftSupervisor
+  alias MaddenDraft.Boundary.BoardManager
 
-  def render(model, add_page) do
-    case add_page do
-      :add_board -> form_boards(model)
-    end
-  end
-
-  ## TRYING TO DO DYNAMIC FORMS
   def form_fields() do
     %{
       title: "Add Board",
@@ -25,7 +20,13 @@ defmodule MaddenDraft.View.Components.Form do
     }
   end
 
-  defp form_boards(model) do
+  def save(model) do
+    board_data = Kernel.get_in(model, [:form_data, :add_board, :madden])
+    DraftSupervisor.create_board(board_data)
+    BoardManager.lazy_player(board_data)
+  end
+
+  def render(model) do
     form_data = form_fields()
 
     row do
@@ -34,7 +35,7 @@ defmodule MaddenDraft.View.Components.Form do
           for field <- form_data.fields do
             row do
               column(size: 12) do
-                label()
+                label(content: "allloo")
 
                 panel(get_panel_style(model, field)) do
                   label(
@@ -49,10 +50,11 @@ defmodule MaddenDraft.View.Components.Form do
             end
           end
         end
-
-        label(content: get_in(model, [:form_data, :status]))
       end
     end
+
+    label(content: "ALLLOOOO")
+    label(content: get_in(model, [:form_data, :add_board, :status]))
   end
 
   defp get_panel_style(model, title) do
