@@ -39,6 +39,7 @@ defmodule MaddenDraft.View.App do
         x: 0,
         label_focus: :none
       },
+      selected_draft: "",
       status: :normal
     }
 
@@ -70,7 +71,7 @@ defmodule MaddenDraft.View.App do
   def tabs(model) do
     case model.current_tab do
       :add_board -> Form.render(model, :add_board)
-      _ -> Home.render(model)
+      _ -> Home.render(model, :home)
     end
   end
 end

@@ -1,7 +1,7 @@
 defmodule MaddenDraft.View.Helpers.Bindings do
   import Ratatouille.Constants, only: [key: 1]
   alias MaddenDraft.View.Components.Cursor
-  alias MaddenDraft.View.Components.Form.Action
+  alias MaddenDraft.View.Components.Form
 
   @global_keymaps [
     {key(:tab), {:move_cursor, :next}},
@@ -64,7 +64,7 @@ defmodule MaddenDraft.View.Helpers.Bindings do
       {:text_mode, action} -> text_mode_action(model, action)
       {:tab, tab_selected} -> tab_change(model, tab_selected)
       {:move_cursor, action} -> move_cursor(model, action)
-      :save -> Action.save(model)
+      :save -> Form.save(model)
       :quit -> model
       _ -> model
     end
@@ -79,12 +79,15 @@ defmodule MaddenDraft.View.Helpers.Bindings do
     end
   end
 
-  defp tab_change(model, tab_selected),
-    do: %{
-      model
+  defp tab_change(model, tab_selected) do
+    new_model = Kernel.put_in(model, [:form_data, :status], "unsaved")
+
+    %{
+      new_model
       | current_tab: tab_selected,
         cursor: %{label_focus: Cursor.label_focused(tab_selected, 0), x: 0, y: 0}
     }
+  end
 
   defp move_cursor(model, action) do
     case action do

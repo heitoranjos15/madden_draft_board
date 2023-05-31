@@ -3,9 +3,9 @@ defmodule MaddenDraft.View.Components.Form.AddBoard do
 
   import Ratatouille.View
 
+  require Logger
+
   alias MaddenDraft.View.Helpers.Styles
-  alias MaddenDraft.Boundary.DraftSupervisor
-  alias MaddenDraft.Boundary.BoardManager
 
   def form_fields() do
     %{
@@ -20,12 +20,6 @@ defmodule MaddenDraft.View.Components.Form.AddBoard do
     }
   end
 
-  def save(model) do
-    board_data = Kernel.get_in(model, [:form_data, :add_board, :madden])
-    DraftSupervisor.create_board(board_data)
-    BoardManager.lazy_player(board_data)
-  end
-
   def render(model) do
     form_data = form_fields()
 
@@ -35,13 +29,19 @@ defmodule MaddenDraft.View.Components.Form.AddBoard do
           for field <- form_data.fields do
             row do
               column(size: 12) do
-                label(content: "allloo")
+                label()
 
-                panel(get_panel_style(model, field)) do
+                panel(
+                  Styles.get_style(
+                    :panel,
+                    model.cursor.label_focus === field,
+                    Atom.to_string(field)
+                  )
+                ) do
                   label(
-                    get_label_style(
-                      model,
-                      field,
+                    Styles.get_style(
+                      :label,
+                      model.cursor.label_focus === field,
                       get_in(model, [:form_data, :add_board, field])
                     )
                   )
@@ -50,26 +50,9 @@ defmodule MaddenDraft.View.Components.Form.AddBoard do
             end
           end
         end
+
+        label(content: get_in(model, [:form_data, :status]))
       end
-    end
-
-    label(content: "ALLLOOOO")
-    label(content: get_in(model, [:form_data, :add_board, :status]))
-  end
-
-  defp get_panel_style(model, title) do
-    if model.cursor.label_focus === title do
-      Styles.pannel_selected_bg(title)
-    else
-      Styles.pannel_normal_bg(title)
-    end
-  end
-
-  defp get_label_style(model, field, content) do
-    if model.cursor.label_focus === field do
-      Styles.label_select_bg(content)
-    else
-      Styles.label_normal_bg(content)
     end
   end
 end

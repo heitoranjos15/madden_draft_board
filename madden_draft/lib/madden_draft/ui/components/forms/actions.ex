@@ -1,12 +1,15 @@
-defmodule MaddenDraft.View.Components.Form.Action do
+defmodule MaddenDraft.View.Components.Form do
+  require Logger
+
   alias MaddenDraft.View.Components.Form.{
     AddBoard
   }
 
-  def build_page(model, tab) do
+  alias MaddenDraft.View.Commands.BoardCommand
+
+  def render(model, tab) do
     case tab do
       :add_board -> AddBoard.render(model)
-      _ -> model
     end
   end
 
@@ -14,7 +17,7 @@ defmodule MaddenDraft.View.Components.Form.Action do
     %{current_tab: tab} = model
 
     case tab do
-      :add_board -> AddBoard.save(model)
+      :add_board -> BoardCommand.save(model)
     end
 
     Kernel.put_in(model, [:form_data, :status], "saved")

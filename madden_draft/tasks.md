@@ -8,9 +8,9 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
-- [*] Figure out how forms are gonna be used, right now we have duplicate codes
+- [] Enter on draft page and show players
 - [] Dynamic columns size for Forms
-- [] Make madden draft page
+- [] Review Project, components Keybinding and commands are confused
 
 ## Done
 - [x] Player boundary
@@ -32,7 +32,15 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Refactor Form module - Build page dynamic
 - [x] Keybinding to save form information
 - [x] Send information to Board process
-
+- [x] Figure out how forms are gonna be used, right now we have duplicate codes
+- [x] DraftSupervisor returns boards created
+  - to get the name for now we are gonna use 
+  ```
+    Registry.keys(MaddenDraft.BoardRegistry, pid(0,228,0))
+  ```
+- [x] Page for List of boards created
+- [x] Make madden draft page
+- [x] Cursor for home page select the draft
 
 ## Columns size
 Right now columns for form page can only have a size of 12 
@@ -46,6 +54,19 @@ $ iex -S mix
 $ MaddenDraft.Boundary.DraftSupervisor.create_board('2022')
 $ MaddenDraft.Boundary.BoardManager.lazy_players('2022')
 $ MaddenDraft.Boundary.BoardManager.show('2022')
+```
+
+Creating on view
+```
+$ iex -S mix
+$ Ratatouille.run MaddenDraft.View.App
+$ MaddenDraft.Boundary.BoardManager.show("Madden")
+```
+
+or get from pid
+```
+$ Supervisor.which_children MaddenDraft.Boundary.DraftSupervisor
+$ MaddenDraft.Boundary.BoardManager.show(pid(0,234,0))
 ```
 
 ## UI candidates

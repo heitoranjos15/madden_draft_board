@@ -1,30 +1,40 @@
 defmodule MaddenDraft.View.Helpers.Styles do
   import Ratatouille.Constants, only: [color: 1]
 
-  def pannel_selected_bg(title),
-    do: [
-      color: color(:black),
-      background: color(:white),
-      title: Atom.to_string(title)
-    ]
+  defguard component_type(component, param) when component === param
 
-  def pannel_normal_bg(title),
-    do: [
-      color: color(:white),
-      title: Atom.to_string(title)
-    ]
-
-  def label_select_bg(content),
+  def selected_style(component, content) when component_type(component, :label),
     do: [
       color: color(:black),
       background: color(:white),
       content: content
     ]
 
-  def label_normal_bg(content),
+  def selected_style(component, title) when component_type(component, :panel),
+    do: [
+      color: color(:black),
+      background: color(:white),
+      title: title
+    ]
+
+  def default_style(component, content) when component_type(component, :label),
     do: [
       color: color(:white),
       background: color(:black),
       content: content
     ]
+
+  def default_style(component, title) when component_type(component, :panel),
+    do: [
+      color: color(:white),
+      title: title
+    ]
+
+  def get_style(component, selected_condition, content) do
+    if selected_condition do
+      selected_style(component, content)
+    else
+      default_style(component, content)
+    end
+  end
 end
