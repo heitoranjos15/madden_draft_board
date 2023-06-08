@@ -19,6 +19,8 @@ defmodule MaddenDraft.View.Components.Home do
   def render(model, tab) do
     if tab == :home do
       home_page(model)
+    else
+      model
     end
   end
 

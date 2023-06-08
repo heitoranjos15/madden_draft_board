@@ -23,13 +23,13 @@ defmodule MaddenDraft.View.Components.Bars.Top do
   def render(model) do
     bar do
       label do
-        render_tabs(model.page, model.current_tab)
+        render_tabs(model.current_page, model.current_tab)
       end
     end
   end
 
-  defp render_tabs(page, current_tab) do
-    tabs = Map.get(@page_tabs, page)
+  defp render_tabs(current_page, current_tab) do
+    tabs = Map.get(@page_tabs, current_page)
 
     rendered_options =
       for {key, label} <- tabs do

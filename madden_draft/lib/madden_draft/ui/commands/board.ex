@@ -13,4 +13,8 @@ defmodule MaddenDraft.View.Commands.BoardCommand do
   def list_boards() do
     DraftSupervisor.get_drafts()
   end
+
+  def get_board_players(draft_name) do
+    board_content = BoardManager.show(draft_name)
+  end
 end

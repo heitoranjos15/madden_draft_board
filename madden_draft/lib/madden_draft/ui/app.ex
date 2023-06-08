@@ -6,6 +6,8 @@ defmodule MaddenDraft.View.App do
 
   alias MaddenDraft.View.Helpers.Bindings
 
+  alias MaddenDraft.View.Board
+
   alias MaddenDraft.View.Components.{
     Bars,
     Home,
@@ -17,7 +19,7 @@ defmodule MaddenDraft.View.App do
   def init(_context) do
     model = %{
       current_tab: :home,
-      page: :home,
+      current_page: :home,
       text_mode: false,
       draft_form: %{
         name: "",
@@ -39,7 +41,7 @@ defmodule MaddenDraft.View.App do
         x: 0,
         label_focus: :none
       },
-      selected_draft: "",
+      draft_selected: "",
       status: :normal
     }
 
@@ -64,11 +66,19 @@ defmodule MaddenDraft.View.App do
     bottom_bar = Bars.Bottom.render(model)
 
     view(top_bar: top_bar, bottom_bar: bottom_bar) do
-      tabs(model)
+      get_page(model)
     end
   end
 
-  def tabs(model) do
+  def get_page(model) do
+    case model.current_page do
+      :home -> tabs_home(model)
+      :board -> Board.render(model)
+      _ -> tabs_home(model)
+    end
+  end
+
+  def tabs_home(model) do
     case model.current_tab do
       :add_board -> Form.render(model, :add_board)
       _ -> Home.render(model, :home)

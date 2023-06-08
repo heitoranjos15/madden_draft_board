@@ -8,9 +8,21 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
-- [] Enter on draft page and show players
+#### Board Players
+- [] Player
+  - [] Create player
+  - [] Show details player selected
+  - [] Edit players details
+
+- [-] List
+  - [x] Navigation betwenn board and home
+  - [x] Table players
+  - [] Order by (rank, age, expected drafted)
+  - [] Vertical board
+
+### Refactor
 - [] Dynamic columns size for Forms
-- [] Review Project, components Keybinding and commands are confused
+- [] Review Project: views, components, keybinding and commands are confused
 
 ## Done
 - [x] Player boundary
@@ -41,7 +53,11 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Page for List of boards created
 - [x] Make madden draft page
 - [x] Cursor for home page select the draft
-
+- [x] Enter on draft page and show players
+  - [x] enter action to select draft
+  - [x] home get board and players
+  - [x] redirect to board page showing players in the board
+ 
 ## Columns size
 Right now columns for form page can only have a size of 12 
 We need to create a way to make this columns customized

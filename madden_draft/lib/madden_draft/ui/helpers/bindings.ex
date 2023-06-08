@@ -2,6 +2,8 @@ defmodule MaddenDraft.View.Helpers.Bindings do
   import Ratatouille.Constants, only: [key: 1]
   alias MaddenDraft.View.Components.Cursor
   alias MaddenDraft.View.Components.Form
+  alias MaddenDraft.View.Components.Home
+  alias MaddenDraft.View.Commands.BoardCommand
 
   @global_keymaps [
     {key(:tab), {:move_cursor, :next}},
@@ -9,7 +11,8 @@ defmodule MaddenDraft.View.Helpers.Bindings do
     {?j, {:move_cursor, :next}},
     {?k, {:move_cursor, :previous}},
     {?0, {:move_cursor, :first}},
-    {?$, {:move_cursor, :last}}
+    {?$, {:move_cursor, :last}},
+    {key(:enter), :enter}
   ]
 
   @page_tabs_shortcuts [
@@ -30,11 +33,22 @@ defmodule MaddenDraft.View.Helpers.Bindings do
           ?w => :save,
           ?q => :quit
         }}
+     ]},
+    {:board,
+     [
+       {:vertical,
+        %{
+          ?b => {:page, :home, :home}
+        }},
+       {:horizontal,
+        %{
+          ?b => {:page, :home, :home}
+        }}
      ]}
   ]
 
   def run(model, key, ch) do
-    page = Map.get(model, :page)
+    page = Map.get(model, :current_page)
 
     tab_command =
       @page_tabs_shortcuts |> Keyword.get(page) |> Keyword.get(model.current_tab) |> Map.get(ch)
@@ -64,6 +78,8 @@ defmodule MaddenDraft.View.Helpers.Bindings do
       {:text_mode, action} -> text_mode_action(model, action)
       {:tab, tab_selected} -> tab_change(model, tab_selected)
       {:move_cursor, action} -> move_cursor(model, action)
+      {:page, page, tab} -> page_change(model, page, tab)
+      :enter -> tab_enter(model)
       :save -> Form.save(model)
       :quit -> model
       _ -> model
@@ -79,6 +95,15 @@ defmodule MaddenDraft.View.Helpers.Bindings do
     end
   end
 
+  defp page_change(model, page, tab) do
+    %{
+      model
+      | current_page: page,
+        current_tab: tab,
+        cursor: %{label_focus: Cursor.label_focused(tab, 0), x: 0, y: 0}
+    }
+  end
+
   defp tab_change(model, tab_selected) do
     new_model = Kernel.put_in(model, [:form_data, :status], "unsaved")
 
@@ -86,6 +111,24 @@ defmodule MaddenDraft.View.Helpers.Bindings do
       new_model
       | current_tab: tab_selected,
         cursor: %{label_focus: Cursor.label_focused(tab_selected, 0), x: 0, y: 0}
+    }
+  end
+
+  defp tab_enter(model) do
+    current_tab = model.current_tab
+
+    case current_tab do
+      :home -> select_draft(model)
+      _ -> model
+    end
+  end
+
+  def select_draft(model) do
+    new_model = page_change(model, :board, :horizontal)
+
+    %{
+      new_model
+      | draft_selected: model.cursor.label_focus
     }
   end
 
