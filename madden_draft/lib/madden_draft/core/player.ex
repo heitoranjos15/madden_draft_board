@@ -51,8 +51,6 @@ defmodule MaddenDraft.Core.Player do
   end
 
   def new(id, attributes) when is_map(attributes) do
-    Map.merge(%{id: id}, attributes) |> inspect |> Logger.debug()
-
     new(
       Map.merge(
         %{id: id, name: "", college: "", age: 0, round_expected: 1, position: ""},

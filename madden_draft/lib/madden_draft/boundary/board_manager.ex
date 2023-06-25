@@ -7,11 +7,11 @@ defmodule MaddenDraft.Boundary.BoardManager do
   alias MaddenDraft.Boundary.PlayerManager
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, [], name: server(name))
+    GenServer.start_link(__MODULE__, [name: name], name: server(name))
   end
 
-  def lazy_player(name) do
-    GenServer.cast(server(name), {:lazy_player})
+  def lazy_players(name) do
+    GenServer.cast(server(name), {:lazy_players})
   end
 
   def add_player_to_board(name, player) do
@@ -38,7 +38,7 @@ defmodule MaddenDraft.Boundary.BoardManager do
     {:ok, state}
   end
 
-  def handle_cast({:lazy_player}, _state) do
+  def handle_cast({:lazy_players}, _state) do
     players =
       [
         %{name: "Trey Lance", age: 19, position: "QB", round_expected: 1, college: "NDSU"},
@@ -77,13 +77,9 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   def handle_call({:add_player_to_board, player}, _from, state) do
-    player_data = find_or_create_player(player)
+    find_or_create_player(player)
 
-    player_data
-    |> inspect()
-    |> Logger.debug()
-
-    attributes = %{player_id: player_data.id, rank: length(state), status: :available}
+    attributes = %{player_id: length(state), rank: length(state), status: :available}
 
     attributes
     |> Board.new()
