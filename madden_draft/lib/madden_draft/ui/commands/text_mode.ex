@@ -1,7 +1,7 @@
-defmodule MaddenDraft.View.Helpers.TextMode do
+defmodule MaddenDraft.View.Command.TextMode do
   import Ratatouille.Constants, only: [key: 1]
 
-  alias MaddenDraft.View.Components.Cursor
+  alias MaddenDraft.View.Command.Cursor
 
   @space_bar key(:space)
 

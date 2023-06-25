@@ -3,7 +3,7 @@ defmodule MaddenDraft.View.App do
 
   import Ratatouille.View
 
-  alias MaddenDraft.View.Helpers.Bindings
+  alias MaddenDraft.View.Command.Bindings
 
   alias MaddenDraft.View.Board
 
@@ -12,14 +12,12 @@ defmodule MaddenDraft.View.App do
     Home
   }
 
-  alias Home.AddBoard
-
-  alias MaddenDraft.View.Helpers.TextMode
+  alias MaddenDraft.View.Command.TextMode
 
   def init(_context) do
     model = %{
-      current_tab: :home,
-      current_page: :home,
+      current_tab: Home,
+      current_page: Home,
       text_mode: false,
       draft_form: %{
         name: "",

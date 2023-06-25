@@ -1,16 +1,23 @@
-defmodule MaddenDraft.View.Constants do
+defmodule MaddenDraft.View.Command.Form.Fields do
+  alias MaddenDraft.View.Components.{
+    AddPlayer,
+    AddBoard
+  }
+
   alias MaddenDraft.Boundary.DraftSupervisor
 
-  @form_fields %{
-    :add_board => [:madden, :year, :team, :team_needs, :picks],
-    :add_player => [:name, :position, :age, :college, :expected]
+  @tab_fields %{
+    :add_board => AddBoard.fields(),
+    :add_player => AddPlayer.fields()
   }
+
+  @magnifier "🔍"
 
   def current_tab_field_limit(%{current_tab: :home}),
     do: DraftSupervisor.get_drafts() |> length |> Kernel.-(1)
 
   def current_tab_field_limit(%{current_tab: current_tab}),
-    do: @form_fields |> Map.get(current_tab) |> length |> Kernel.-(1)
+    do: @tab_fields |> Map.get(current_tab) |> length |> Kernel.-(1)
 
   def current_tab_fields(%{current_tab: current_tab}),
     do: current_tab_fields(current_tab)
@@ -21,5 +28,7 @@ defmodule MaddenDraft.View.Constants do
   end
 
   def current_tab_fields(current_tab),
-    do: @form_fields |> Map.get(current_tab, [])
+    do: @tab_fields |> Map.get(current_tab, [])
+
+  def magnifier, do: @magnifier
 end

@@ -9,13 +9,11 @@ defmodule MaddenDraft.View.Components.Home do
 █▄█   █▄█▄█ █▄▄█▄▄▄▄▄▄██▄▄▄▄▄▄██▄▄▄▄▄▄▄█▄█  █▄▄█  █▄▄▄▄▄▄██▄▄▄█  █▄█▄█ █▄▄█▄▄▄█     █▄▄▄█
 "
 
-  @behaviour Ratatouille.App
-
   require Logger
   import Ratatouille.View
-  alias MaddenDraft.View.Commands.BoardCommand
+  alias MaddenDraft.View.Integration.BoardIntegration
   alias MaddenDraft.View.Helpers.Styles
-  alias MaddenDraft.View.Components.Form.AddBoard
+  alias MaddenDraft.View.Components.AddBoard
 
   def render(model) do
     case model.current_tab do
@@ -38,7 +36,7 @@ defmodule MaddenDraft.View.Components.Home do
   end
 
   def build_list_drafts(model) do
-    for draft <- BoardCommand.list_boards() do
+    for draft <- BoardIntegration.list_boards() do
       draft_name = draft.key
 
       label(Styles.get_style(:label, model.cursor.label_focus === draft_name, draft_name))

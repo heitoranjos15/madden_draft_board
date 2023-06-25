@@ -9,9 +9,10 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 ## Tasks
 ### Refactor
-- [] Review Project: views, components, keybinding and commands are confused
-  - Re think about the project, maybe some module has to change their names, modules taking a lot of responsibility
-- [] Tab changes in a global key (probabily n key)
+- [*] Instead of atoms for pages and tabs, modules as with default functions (render, fields, tabs) this will erase every case to switch tabs
+- [] Centralize pages, tabs names and form keys
+- [] Tab changes in a global key (probabily n and N key)
+- [x] Re-organize modules and names
 
 #### Board Players
 - [*] Player
@@ -64,6 +65,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
     - [x] Cursor movement
     - [x] Text edit
     - [x] Binding creation
+- [x] Review Project: views, components, keybinding and commands are confused
+  - [x] Re think about the project, maybe some module has to change their names, modules taking a lot of responsibility
    
 
 ## Columns size

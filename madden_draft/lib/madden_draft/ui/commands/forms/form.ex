@@ -1,4 +1,4 @@
-defmodule MaddenDraft.View.Components.Form do
+defmodule MaddenDraft.View.Command.Form do
   require Logger
   @behaviour Ratatouille.App
 
@@ -8,10 +8,10 @@ defmodule MaddenDraft.View.Components.Form do
 
   alias MaddenDraft.View.Helpers.Styles
 
-  def create_form(model, title, fields, column_size) do
+  def generate(model, title, fields, column_size) do
     row do
       column(size: 12) do
-        set_form(model, fields, %{:title => title, :column_size => column_size})
+        generate_form(model, fields, %{:title => title, :column_size => column_size})
       end
     end
   end
@@ -38,7 +38,7 @@ defmodule MaddenDraft.View.Components.Form do
         )
       ])
 
-  defp set_form(_, [], form_details, content, _, _, _) do
+  defp generate_form(_, [], form_details, content, _, _, _) do
     panel(title: form_details.title) do
       for row_content <- content do
         row(row_content)
@@ -46,14 +46,22 @@ defmodule MaddenDraft.View.Components.Form do
     end
   end
 
-  defp set_form(model, field, form_details, content, column_count, row, limit_per_row)
+  defp generate_form(model, field, form_details, content, column_count, row, limit_per_row)
        when column_count >= limit_per_row do
     new_row = Kernel.+(row, 1)
     new_content = List.insert_at(content, new_row, [])
-    set_form(model, field, form_details, new_content, 0, new_row, limit_per_row)
+    generate_form(model, field, form_details, new_content, 0, new_row, limit_per_row)
   end
 
-  defp set_form(model, [field | tail], form_details, content, column_count, row, limit_per_row)
+  defp generate_form(
+         model,
+         [field | tail],
+         form_details,
+         content,
+         column_count,
+         row,
+         limit_per_row
+       )
        when column_count < limit_per_row do
     %{:column_size => size} = form_details
 
@@ -66,12 +74,12 @@ defmodule MaddenDraft.View.Components.Form do
 
     column_count = Kernel.+(column_count, 1)
 
-    set_form(model, tail, form_details, new_content, column_count, row, limit_per_row)
+    generate_form(model, tail, form_details, new_content, column_count, row, limit_per_row)
   end
 
-  defp set_form(model, fields, form_details) do
+  defp generate_form(model, fields, form_details) do
     %{:column_size => size} = form_details
     limit_per_row = Kernel.div(@max_size, size)
-    set_form(model, fields, form_details, [[]], 0, 0, limit_per_row)
+    generate_form(model, fields, form_details, [[]], 0, 0, limit_per_row)
   end
 end

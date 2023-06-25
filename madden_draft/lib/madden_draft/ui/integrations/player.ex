@@ -1,4 +1,4 @@
-defmodule MaddenDraft.View.Commands.PlayerCommand do
+defmodule MaddenDraft.View.Integration.PlayerIntegration do
   require Logger
 
   alias MaddenDraft.Boundary.BoardManager

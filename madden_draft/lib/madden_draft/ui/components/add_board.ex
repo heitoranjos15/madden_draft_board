@@ -1,10 +1,10 @@
-defmodule MaddenDraft.View.Components.Form.AddBoard do
+defmodule MaddenDraft.View.Components.AddBoard do
   @behaviour Ratatouille.App
 
   require Logger
 
-  alias MaddenDraft.View.Components.Form
-  alias MaddenDraft.View.Commands.BoardCommand
+  alias MaddenDraft.View.Command.Form
+  alias MaddenDraft.View.Integration.BoardIntegration
 
   @title "Add Board"
 
@@ -17,11 +17,13 @@ defmodule MaddenDraft.View.Components.Form.AddBoard do
   ]
 
   def render(model) do
-    Form.create_form(model, @title, @form_fields, 6)
+    Form.generate(model, @title, @form_fields, 6)
   end
 
   def save(model) do
-    BoardCommand.save(model)
+    BoardIntegration.save(model)
     Kernel.put_in(model, [:form_data, :status], "saved")
   end
+
+  def fields(), do: @form_fields
 end

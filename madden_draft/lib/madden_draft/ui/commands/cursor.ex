@@ -1,13 +1,13 @@
-defmodule MaddenDraft.View.Components.Cursor do
-  alias MaddenDraft.View.Constants
+defmodule MaddenDraft.View.Command.Cursor do
+  alias MaddenDraft.View.Command.Form.Fields
 
   def next(model), do: next(model, model.cursor.x + 1)
 
-  def next(model, :last), do: next(model, Constants.current_tab_field_limit(model))
+  def next(model, :last), do: next(model, Fields.current_tab_field_limit(model))
 
   def next(model, position) do
     cursor_pos =
-      if Constants.current_tab_field_limit(model) < position do
+      if Fields.current_tab_field_limit(model) < position do
         0
       else
         position
@@ -21,7 +21,7 @@ defmodule MaddenDraft.View.Components.Cursor do
   def previous(model, position) do
     cursor_pos =
       if position < 0 do
-        Constants.current_tab_field_limit(model)
+        Fields.current_tab_field_limit(model)
       else
         position
       end
@@ -34,7 +34,7 @@ defmodule MaddenDraft.View.Components.Cursor do
 
   def label_focused(current_tab, cursor_position) do
     current_tab
-    |> Constants.current_tab_fields()
+    |> Fields.current_tab_fields()
     |> Enum.at(cursor_position)
   end
 end

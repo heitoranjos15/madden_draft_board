@@ -1,8 +1,7 @@
-defmodule MaddenDraft.View.Helpers.Bindings do
+defmodule MaddenDraft.View.Command.Bindings do
   import Ratatouille.Constants, only: [key: 1]
-  alias MaddenDraft.View.Components.Cursor
-  alias MaddenDraft.View.Components.FormAction
-  alias MaddenDraft.View.Components.PlayerAction
+  alias MaddenDraft.View.Command.Cursor
+  alias MaddenDraft.View.Command.Form.Action
 
   @global_keymaps [
     {key(:tab), {:move_cursor, :next}},
@@ -90,7 +89,7 @@ defmodule MaddenDraft.View.Helpers.Bindings do
       {:move_cursor, action} -> move_cursor(model, action)
       {:page, page, tab} -> page_change(model, page, tab)
       :enter -> tab_enter(model)
-      :save -> FormAction.save(model)
+      :save -> Action.save(model)
       :quit -> model
       _ -> model
     end
