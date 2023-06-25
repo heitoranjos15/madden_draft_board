@@ -2,7 +2,8 @@ defmodule MaddenDraft.View.Constants do
   alias MaddenDraft.Boundary.DraftSupervisor
 
   @form_fields %{
-    :add_board => [:madden, :year, :team, :team_needs, :picks]
+    :add_board => [:madden, :year, :team, :team_needs, :picks],
+    :add_player => [:name, :position, :age, :college, :expected]
   }
 
   def current_tab_field_limit(%{current_tab: :home}),

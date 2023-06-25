@@ -77,13 +77,9 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   def handle_call({:add_player_to_board, player}, _from, state) do
-    player_data = find_or_create_player(player)
+    find_or_create_player(player)
 
-    player_data
-    |> inspect()
-    |> Logger.debug()
-
-    attributes = %{player_id: player_data.id, rank: length(state), status: :available}
+    attributes = %{player_id: length(state), rank: length(state), status: :available}
 
     attributes
     |> Board.new()

@@ -2,7 +2,6 @@ defmodule MaddenDraft.View.App do
   @behaviour Ratatouille.App
 
   import Ratatouille.View
-  import Ratatouille.Runtime.Command
 
   alias MaddenDraft.View.Helpers.Bindings
 
@@ -10,9 +9,10 @@ defmodule MaddenDraft.View.App do
 
   alias MaddenDraft.View.Components.{
     Bars,
-    Home,
-    Form
+    Home
   }
+
+  alias Home.AddBoard
 
   alias MaddenDraft.View.Helpers.TextMode
 
@@ -32,6 +32,13 @@ defmodule MaddenDraft.View.App do
           team: "",
           team_needs: "",
           picks: ""
+        },
+        add_player: %{
+          name: "Heitor",
+          position: "",
+          age: "",
+          college: "",
+          expected: ""
         },
         status: "unsaved"
       },
@@ -72,16 +79,9 @@ defmodule MaddenDraft.View.App do
 
   def get_page(model) do
     case model.current_page do
-      :home -> tabs_home(model)
+      :home -> Home.render(model)
       :board -> Board.render(model)
-      _ -> tabs_home(model)
-    end
-  end
-
-  def tabs_home(model) do
-    case model.current_tab do
-      :add_board -> Form.render(model, :add_board)
-      _ -> Home.render(model, :home)
+      _ -> Home.render(model)
     end
   end
 end

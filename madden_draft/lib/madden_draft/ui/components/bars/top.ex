@@ -12,7 +12,7 @@ defmodule MaddenDraft.View.Components.Bars.Top do
       {:home, "[B]ack"},
       {:horizontal, "[H]orizontal"},
       {:vertical, "[V]ertical"},
-      {:new_player, "[A]dd player"},
+      {:add_player, "[A]dd player"},
       {:edit_player, "[E]dit player"}
     ]
   }

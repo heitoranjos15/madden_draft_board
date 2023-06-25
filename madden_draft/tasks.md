@@ -8,9 +8,14 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
+### Refactor
+- [] Review Project: views, components, keybinding and commands are confused
+  - Re think about the project, maybe some module has to change their names, modules taking a lot of responsibility
+- [] Tab changes in a global key (probabily n key)
+
 #### Board Players
-- [] Player
-  - [] Create player
+- [*] Player
+    - [] Save player
   - [] Show details player selected
   - [] Edit players details
 
@@ -19,10 +24,6 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
   - [x] Table players
   - [] Order by (rank, age, expected drafted)
   - [] Vertical board
-
-### Refactor
-- [] Dynamic columns size for Forms
-- [] Review Project: views, components, keybinding and commands are confused
 
 ## Done
 - [x] Player boundary
@@ -57,7 +58,14 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
   - [x] enter action to select draft
   - [x] home get board and players
   - [x] redirect to board page showing players in the board
- 
+- [x] Create form generically
+- [*] Create player
+    - [x] Form
+    - [x] Cursor movement
+    - [x] Text edit
+    - [x] Binding creation
+   
+
 ## Columns size
 Right now columns for form page can only have a size of 12 
 We need to create a way to make this columns customized

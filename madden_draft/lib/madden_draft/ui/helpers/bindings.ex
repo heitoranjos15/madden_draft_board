@@ -1,9 +1,8 @@
 defmodule MaddenDraft.View.Helpers.Bindings do
   import Ratatouille.Constants, only: [key: 1]
   alias MaddenDraft.View.Components.Cursor
-  alias MaddenDraft.View.Components.Form
-  alias MaddenDraft.View.Components.Home
-  alias MaddenDraft.View.Commands.BoardCommand
+  alias MaddenDraft.View.Components.FormAction
+  alias MaddenDraft.View.Components.PlayerAction
 
   @global_keymaps [
     {key(:tab), {:move_cursor, :next}},
@@ -38,11 +37,22 @@ defmodule MaddenDraft.View.Helpers.Bindings do
      [
        {:vertical,
         %{
-          ?b => {:page, :home, :home}
+          ?b => {:page, :home, :home},
+          ?c => {:tab, :add_player}
         }},
        {:horizontal,
         %{
-          ?b => {:page, :home, :home}
+          ?b => {:page, :home, :home},
+          ?c => {:tab, :add_player}
+        }},
+       {:add_player,
+        %{
+          ?b => {:page, :home, :home},
+          ?h => {:tab, :horizontal},
+          ?a => {:text_mode, :start},
+          ?c => {:text_mode, :clean},
+          ?w => :save,
+          ?q => :quit
         }}
      ]}
   ]
@@ -80,7 +90,7 @@ defmodule MaddenDraft.View.Helpers.Bindings do
       {:move_cursor, action} -> move_cursor(model, action)
       {:page, page, tab} -> page_change(model, page, tab)
       :enter -> tab_enter(model)
-      :save -> Form.save(model)
+      :save -> FormAction.save(model)
       :quit -> model
       _ -> model
     end
@@ -123,7 +133,7 @@ defmodule MaddenDraft.View.Helpers.Bindings do
     end
   end
 
-  def select_draft(model) do
+  defp select_draft(model) do
     new_model = page_change(model, :board, :horizontal)
 
     %{

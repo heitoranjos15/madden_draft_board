@@ -30,6 +30,9 @@ defmodule MaddenDraft.View.Helpers.Styles do
       title: title
     ]
 
+  def get_style(component, selected_condition, nil),
+    do: get_style(component, selected_condition, "")
+
   def get_style(component, selected_condition, content) do
     if selected_condition do
       selected_style(component, content)

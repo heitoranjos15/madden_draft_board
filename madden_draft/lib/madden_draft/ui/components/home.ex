@@ -15,12 +15,13 @@ defmodule MaddenDraft.View.Components.Home do
   import Ratatouille.View
   alias MaddenDraft.View.Commands.BoardCommand
   alias MaddenDraft.View.Helpers.Styles
+  alias MaddenDraft.View.Components.Form.AddBoard
 
-  def render(model, tab) do
-    if tab == :home do
-      home_page(model)
-    else
-      model
+  def render(model) do
+    case model.current_tab do
+      :home -> home_page(model)
+      :add_board -> AddBoard.render(model)
+      _ -> home_page(model)
     end
   end
 
