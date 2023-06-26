@@ -1,4 +1,6 @@
-defmodule MaddenDraft.View.Board.Horizontal do
+defmodule MaddenDraft.View.Components.Board.Horizontal do
+  @behaviour MaddenDraft.View
+
   require Logger
   import Ratatouille.View
   alias MaddenDraft.View.Helpers.Styles
@@ -25,6 +27,8 @@ defmodule MaddenDraft.View.Board.Horizontal do
       end
     end
   end
+
+  def fields, do: []
 
   defp players_row(board_data) do
     for data <- board_data do

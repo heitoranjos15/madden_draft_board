@@ -5,8 +5,6 @@ defmodule MaddenDraft.View.App do
 
   alias MaddenDraft.View.Command.Bindings
 
-  alias MaddenDraft.View.Board
-
   alias MaddenDraft.View.Components.{
     Bars,
     Home
@@ -71,17 +69,13 @@ defmodule MaddenDraft.View.App do
     bottom_bar = Bars.Bottom.render(model)
 
     view(top_bar: top_bar, bottom_bar: bottom_bar) do
-      get_page(model)
+      model.current_page.render(model)
     end
   end
 
-  def get_page(model) do
-    case model.current_page do
-      :home -> Home.render(model)
-      :board -> Board.render(model)
-      _ -> Home.render(model)
-    end
-  end
+  @magnifier "🔍"
+
+  def magnifier, do: @magnifier
 end
 
 # Ratatouille.run(MaddenDraft.View.App)

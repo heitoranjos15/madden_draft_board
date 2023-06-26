@@ -8,13 +8,7 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
-### Refactor
-- [*] Instead of atoms for pages and tabs, modules as with default functions (render, fields, tabs) this will erase every case to switch tabs
-- [] Centralize pages, tabs names and form keys
-- [] Tab changes in a global key (probabily n and N key)
-- [x] Re-organize modules and names
-
-#### Board Players
+## Board Players
 - [*] Player
     - [] Save player
   - [] Show details player selected
@@ -67,6 +61,12 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
     - [x] Binding creation
 - [x] Review Project: views, components, keybinding and commands are confused
   - [x] Re think about the project, maybe some module has to change their names, modules taking a lot of responsibility
+- [x] Tab changes in a global key (probabily n and N key)
+- [x] Centralize pages, tabs names and form keys
+- [x] Instead of atoms for pages and tabs, modules as with default functions (render, fields, tabs) this will erase every case to switch tabs
+- [x] Re-organize modules and names
+
+
    
 
 ## Columns size

@@ -35,7 +35,7 @@ defmodule MaddenDraft.View.Command.TextMode do
   def get_label_by_cursor(current_tab, cursor_position, form_data) do
     label = Cursor.label_focused(current_tab, cursor_position)
 
-    label_path = [current_tab, label]
+    label_path = [current_tab.name(), label]
 
     text = get_in(form_data, label_path)
 
