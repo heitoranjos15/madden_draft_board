@@ -2,6 +2,7 @@ defmodule MaddenDraft.View.App do
   @behaviour Ratatouille.App
 
   import Ratatouille.View
+  require Logger
 
   alias MaddenDraft.View.Command.Bindings
 
@@ -11,33 +12,14 @@ defmodule MaddenDraft.View.App do
   }
 
   alias MaddenDraft.View.Command.TextMode
+  alias MaddenDraft.View.Command.Form.Data
 
   def init(_context) do
     model = %{
       current_tab: Home,
       current_page: Home,
       text_mode: false,
-      draft_form: %{
-        name: "",
-        already_exist: false
-      },
-      form_data: %{
-        add_board: %{
-          madden: "Heitor",
-          year: "",
-          team: "",
-          team_needs: "",
-          picks: ""
-        },
-        add_player: %{
-          name: "Heitor",
-          position: "",
-          age: "",
-          college: "",
-          expected: ""
-        },
-        status: "unsaved"
-      },
+      form_data: %{},
       text_value: "",
       cursor: %{
         y: 0,
@@ -48,7 +30,7 @@ defmodule MaddenDraft.View.App do
       status: :normal
     }
 
-    model
+    put_in(model, [:form_data], Data.form_data())
   end
 
   def update(model, msg) do
