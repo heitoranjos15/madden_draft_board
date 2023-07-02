@@ -1,4 +1,4 @@
-defmodule MaddenDraft.View.Commands.BoardCommand do
+defmodule MaddenDraft.View.Integration.BoardIntegration do
   require Logger
 
   alias MaddenDraft.Boundary.DraftSupervisor
@@ -15,6 +15,6 @@ defmodule MaddenDraft.View.Commands.BoardCommand do
   end
 
   def get_board_players(draft_name) do
-    board_content = BoardManager.show(draft_name)
+    BoardManager.show(draft_name)
   end
 end

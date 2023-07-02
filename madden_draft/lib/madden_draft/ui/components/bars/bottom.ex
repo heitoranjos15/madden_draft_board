@@ -10,7 +10,7 @@ defmodule MaddenDraft.View.Components.Bars.Bottom do
     bar do
       label do
         text(content: "<<<")
-        text(@style_selected ++ [content: Atom.to_string(model.current_page)])
+        text(@style_selected ++ [content: Atom.to_string(model.current_page.name)])
         text(content: ">>>")
         text(content: "<<<")
         text(@style_selected ++ [content: Atom.to_string(model.status)])

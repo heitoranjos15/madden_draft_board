@@ -1,9 +1,9 @@
-defmodule MaddenDraft.View.Components.Form.AddPlayer do
-  @behaviour Ratatouille.App
+defmodule MaddenDraft.View.Components.AddPlayer do
+  @behaviour MaddenDraft.View
 
   require Logger
 
-  alias MaddenDraft.View.Components.Form
+  import MaddenDraft.View.Command.Form
 
   @title "Add Player"
 
@@ -30,6 +30,15 @@ defmodule MaddenDraft.View.Components.Form.AddPlayer do
   }
 
   def render(model) do
-    Form.create_form(model, @title, @form_player_fields, 3)
+    generate(model, @title, @form_player_fields, 3)
   end
+
+  def name, do: :add_player
+
+  def fields, do: @form_player_fields
+
+  def bindings,
+    do: %{?a => {:text_mode, :start}, ?c => {:text_mode, :clean}, ?w => :save, ?q => :quit}
+
+  def get_skill_fields, do: @form_skills_fields
 end

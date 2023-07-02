@@ -2,46 +2,24 @@ defmodule MaddenDraft.View.App do
   @behaviour Ratatouille.App
 
   import Ratatouille.View
+  require Logger
 
-  alias MaddenDraft.View.Helpers.Bindings
-
-  alias MaddenDraft.View.Board
+  alias MaddenDraft.View.Command.Bindings
 
   alias MaddenDraft.View.Components.{
     Bars,
     Home
   }
 
-  alias Home.AddBoard
-
-  alias MaddenDraft.View.Helpers.TextMode
+  alias MaddenDraft.View.Command.TextMode
+  alias MaddenDraft.View.Command.Form.Data
 
   def init(_context) do
     model = %{
-      current_tab: :home,
-      current_page: :home,
+      current_tab: Home,
+      current_page: Home,
       text_mode: false,
-      draft_form: %{
-        name: "",
-        already_exist: false
-      },
-      form_data: %{
-        add_board: %{
-          madden: "Heitor",
-          year: "",
-          team: "",
-          team_needs: "",
-          picks: ""
-        },
-        add_player: %{
-          name: "Heitor",
-          position: "",
-          age: "",
-          college: "",
-          expected: ""
-        },
-        status: "unsaved"
-      },
+      form_data: %{},
       text_value: "",
       cursor: %{
         y: 0,
@@ -52,7 +30,7 @@ defmodule MaddenDraft.View.App do
       status: :normal
     }
 
-    model
+    put_in(model, [:form_data], Data.form_data())
   end
 
   def update(model, msg) do
@@ -73,17 +51,13 @@ defmodule MaddenDraft.View.App do
     bottom_bar = Bars.Bottom.render(model)
 
     view(top_bar: top_bar, bottom_bar: bottom_bar) do
-      get_page(model)
+      model.current_page.render(model)
     end
   end
 
-  def get_page(model) do
-    case model.current_page do
-      :home -> Home.render(model)
-      :board -> Board.render(model)
-      _ -> Home.render(model)
-    end
-  end
+  @magnifier "🔍"
+
+  def magnifier, do: @magnifier
 end
 
 # Ratatouille.run(MaddenDraft.View.App)

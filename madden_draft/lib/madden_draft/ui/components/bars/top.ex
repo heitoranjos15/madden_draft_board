@@ -29,11 +29,12 @@ defmodule MaddenDraft.View.Components.Bars.Top do
   end
 
   defp render_tabs(current_page, current_tab) do
-    tabs = Map.get(@page_tabs, current_page)
+    tabs = current_page.tabs()
+    current_tab_name = current_tab.name()
 
     rendered_options =
       for {key, label} <- tabs do
-        if key == current_tab do
+        if key == current_tab_name do
           text(@style_selected ++ [content: label])
         else
           text(content: label)

@@ -1,7 +1,7 @@
-defmodule MaddenDraft.View.Helpers.TextMode do
+defmodule MaddenDraft.View.Command.TextMode do
   import Ratatouille.Constants, only: [key: 1]
 
-  alias MaddenDraft.View.Components.Cursor
+  alias MaddenDraft.View.Command.Cursor
 
   @space_bar key(:space)
 
@@ -35,7 +35,7 @@ defmodule MaddenDraft.View.Helpers.TextMode do
   def get_label_by_cursor(current_tab, cursor_position, form_data) do
     label = Cursor.label_focused(current_tab, cursor_position)
 
-    label_path = [current_tab, label]
+    label_path = [current_tab.name(), label]
 
     text = get_in(form_data, label_path)
 

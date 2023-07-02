@@ -1,4 +1,6 @@
 defmodule MaddenDraft.View.Components.Home do
+  @behaviour MaddenDraft.View
+
   @logo "
  ▄▄   ▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄▄  ▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄    ▄    ▄▄▄▄▄▄  ▄▄▄▄▄▄   ▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄
 █  █▄█  █      █      ██      ██       █  █  █ █  █      ██   ▄  █ █      █       █       █
@@ -9,21 +11,35 @@ defmodule MaddenDraft.View.Components.Home do
 █▄█   █▄█▄█ █▄▄█▄▄▄▄▄▄██▄▄▄▄▄▄██▄▄▄▄▄▄▄█▄█  █▄▄█  █▄▄▄▄▄▄██▄▄▄█  █▄█▄█ █▄▄█▄▄▄█     █▄▄▄█
 "
 
-  @behaviour Ratatouille.App
-
   require Logger
   import Ratatouille.View
-  alias MaddenDraft.View.Commands.BoardCommand
+  alias MaddenDraft.View.Integration.BoardIntegration
   alias MaddenDraft.View.Helpers.Styles
-  alias MaddenDraft.View.Components.Form.AddBoard
+  alias MaddenDraft.View.Components.AddBoard
+  alias MaddenDraft.View.Components.Board
 
   def render(model) do
-    case model.current_tab do
+    case model.current_tab.name do
       :home -> home_page(model)
-      :add_board -> AddBoard.render(model)
-      _ -> home_page(model)
+      _ -> model.current_tab.render(model)
     end
   end
+
+  def name, do: :home
+
+  def tabs, do: [{:home, "[H]ome"}, {:add_board, "[A]dd"}, {:search, "[S]earch"}]
+
+  def bindings,
+    do: %{
+      ?h => {:tab, MaddenDraft.View.Components.Home},
+      ?a => {:tab, AddBoard}
+      # ?s => {:tab, :search_board}
+    }
+
+  def fields,
+    do:
+      BoardIntegration.list_boards()
+      |> Enum.map(fn draft -> draft.key end)
 
   defp home_page(model) do
     row do
@@ -38,10 +54,12 @@ defmodule MaddenDraft.View.Components.Home do
   end
 
   def build_list_drafts(model) do
-    for draft <- BoardCommand.list_boards() do
+    for draft <- BoardIntegration.list_boards() do
       draft_name = draft.key
 
       label(Styles.get_style(:label, model.cursor.label_focus === draft_name, draft_name))
     end
   end
+
+  def redirect, do: [Board, Board]
 end
