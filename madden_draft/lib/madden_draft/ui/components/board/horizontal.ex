@@ -14,7 +14,7 @@ defmodule MaddenDraft.View.Components.Board.Horizontal do
     "status"
   ]
 
-  def render(model, board_data) do
+  def render(model, board_data) when is_list(board_data) do
     panel(Styles.default_style(:panel, model.draft_selected)) do
       table do
         table_row do
@@ -25,6 +25,12 @@ defmodule MaddenDraft.View.Components.Board.Horizontal do
 
         players_row(board_data)
       end
+    end
+  end
+
+  def render(_, _) do
+    panel do
+      label(content: "Board empty !")
     end
   end
 
@@ -40,7 +46,7 @@ defmodule MaddenDraft.View.Components.Board.Horizontal do
             case column do
               "rank" -> Integer.to_string(data.rank)
               "status" -> Atom.to_string(data.status)
-              "age" -> Integer.to_string(player.age)
+              "age" -> player.age
               _ -> Map.get(player, String.to_atom(column))
             end
 

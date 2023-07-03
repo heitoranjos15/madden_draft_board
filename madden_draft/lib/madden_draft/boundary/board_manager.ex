@@ -7,7 +7,7 @@ defmodule MaddenDraft.Boundary.BoardManager do
   alias MaddenDraft.Boundary.PlayerManager
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, [name: name], name: server(name))
+    GenServer.start_link(__MODULE__, [], name: server(name))
   end
 
   def lazy_players(name) do
@@ -133,13 +133,17 @@ defmodule MaddenDraft.Boundary.BoardManager do
     end
   end
 
-  defp get_player_data(board) do
+  defp get_player_data(state) when length(state) > 0 do
     set_player_data_fun = fn board_player ->
       player_data = PlayerManager.find_player(:id, board_player.player_id)
       Map.put(board_player, :player, player_data)
     end
 
-    Enum.map(board, set_player_data_fun)
+    Enum.map(state, set_player_data_fun)
+  end
+
+  defp get_player_data(_) do
+    []
   end
 
   defp server(pid) when is_pid(pid), do: pid

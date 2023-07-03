@@ -7,7 +7,6 @@ defmodule MaddenDraft.View.Integration.BoardIntegration do
   def save(model) do
     board_name = Kernel.get_in(model, [:form_data, :add_board, :madden])
     DraftSupervisor.create_board(board_name)
-    BoardManager.lazy_players(board_name)
   end
 
   def list_boards() do

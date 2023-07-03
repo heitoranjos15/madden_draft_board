@@ -9,8 +9,14 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 ## Tasks
 ## Board Players
-- [*] Player
-    - [] Save player
+- [] Player List
+  - [] cursor
+  - [] change rank
+
+- [] Player details
+  - [] Form
+  - [] Save 
+- [] Player list details
   - [] Show details player selected
   - [] Edit players details
 
@@ -54,7 +60,7 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
   - [x] home get board and players
   - [x] redirect to board page showing players in the board
 - [x] Create form generically
-- [*] Create player
+- [x] Create player
     - [x] Form
     - [x] Cursor movement
     - [x] Text edit
@@ -65,7 +71,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Centralize pages, tabs names and form keys
 - [x] Instead of atoms for pages and tabs, modules as with default functions (render, fields, tabs) this will erase every case to switch tabs
 - [x] Re-organize modules and names
-
+- [x] Player
+    - [x] Save player
 
    
 

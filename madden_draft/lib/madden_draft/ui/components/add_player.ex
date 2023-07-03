@@ -1,9 +1,8 @@
 defmodule MaddenDraft.View.Components.AddPlayer do
   @behaviour MaddenDraft.View
 
-  require Logger
-
   import MaddenDraft.View.Command.Form
+  alias MaddenDraft.View.Integration.PlayerIntegration
 
   @title "Add Player"
 
@@ -12,7 +11,7 @@ defmodule MaddenDraft.View.Components.AddPlayer do
     :position,
     :age,
     :college,
-    :expected
+    :round_expected
   ]
 
   @form_skills_fields %{
@@ -41,4 +40,9 @@ defmodule MaddenDraft.View.Components.AddPlayer do
     do: %{?a => {:text_mode, :start}, ?c => {:text_mode, :clean}, ?w => :save, ?q => :quit}
 
   def get_skill_fields, do: @form_skills_fields
+
+  def save(model) do
+    PlayerIntegration.save(model)
+    Kernel.put_in(model, [:form_data, :status], "saved")
+  end
 end
