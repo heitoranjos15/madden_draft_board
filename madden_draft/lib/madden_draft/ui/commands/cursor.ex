@@ -11,7 +11,7 @@ defmodule MaddenDraft.View.Command.Cursor do
         position
       end
 
-    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model.current_tab, cursor_pos)}}
+    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model)}}
   end
 
   def previous(model), do: previous(model, model.cursor.x - 1)
@@ -24,17 +24,22 @@ defmodule MaddenDraft.View.Command.Cursor do
         position
       end
 
-    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model.current_tab, cursor_pos)}}
+    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model)}}
   end
 
-  def label_focused(%{current_tab: current_tab, cursor: %{x: cursor_position}}),
-    do: label_focused(current_tab, cursor_position)
-
-  def label_focused(current_tab, cursor_position) do
-    Enum.at(current_tab.fields, cursor_position)
+  def label_focused(model, tab_selected) do
+    Enum.at(tab_selected.fields(model), 0)
   end
 
-  defp tab_field_limit(%{current_tab: tab}) do
-    tab.fields |> length |> Kernel.-(1)
+  def label_focused(model) do
+    %{current_tab: current_tab, cursor: %{x: cursor_position}} = model
+
+    Enum.at(current_tab.fields(model), cursor_position)
+  end
+
+  defp tab_field_limit(model) do
+    %{current_tab: tab} = model
+
+    tab.fields(model) |> length |> Kernel.-(1)
   end
 end

@@ -14,49 +14,6 @@ defmodule MaddenDraft.View.Command.Bindings do
     {key(:enter), :enter}
   ]
 
-  @page_tabs_shortcuts [
-    {:home,
-     [
-       {:home,
-        %{
-          ?h => {:tab, :home},
-          ?a => {:tab, :add_board},
-          ?s => {:tab, :search_board}
-        }},
-       {:add_board,
-        %{
-          ?h => {:tab, :home},
-          ?s => {:tab, :search_board},
-          ?a => {:text_mode, :start},
-          ?c => {:text_mode, :clean},
-          ?w => :save,
-          ?q => :quit
-        }}
-     ]},
-    {:board,
-     [
-       {:vertical,
-        %{
-          ?b => {:page, :home, :home},
-          ?c => {:tab, :add_player}
-        }},
-       {:horizontal,
-        %{
-          ?b => {:page, :home, :home},
-          ?c => {:tab, :add_player}
-        }},
-       {:add_player,
-        %{
-          ?b => {:page, :home, :home},
-          ?h => {:tab, :horizontal},
-          ?a => {:text_mode, :start},
-          ?c => {:text_mode, :clean},
-          ?w => :save,
-          ?q => :quit
-        }}
-     ]}
-  ]
-
   def run(model, key, ch) do
     page = Map.get(model, :current_page)
 
@@ -114,7 +71,7 @@ defmodule MaddenDraft.View.Command.Bindings do
       model
       | current_page: page,
         current_tab: tab,
-        cursor: %{label_focus: Cursor.label_focused(tab, 0), x: 0, y: 0},
+        cursor: %{label_focus: Cursor.label_focused(model, tab), x: 0, y: 0},
         draft_selected: model.cursor.label_focus
     }
   end
@@ -125,7 +82,7 @@ defmodule MaddenDraft.View.Command.Bindings do
     %{
       new_model
       | current_tab: tab_selected,
-        cursor: %{label_focus: Cursor.label_focused(tab_selected, 0), x: 0, y: 0}
+        cursor: %{label_focus: Cursor.label_focused(new_model, tab_selected), x: 0, y: 0}
     }
   end
 
