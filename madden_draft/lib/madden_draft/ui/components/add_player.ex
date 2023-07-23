@@ -34,7 +34,7 @@ defmodule MaddenDraft.View.Components.AddPlayer do
 
   def name, do: :add_player
 
-  def fields, do: @form_player_fields
+  def fields(_), do: @form_player_fields
 
   def bindings,
     do: %{?a => {:text_mode, :start}, ?c => {:text_mode, :clean}, ?w => :save, ?q => :quit}

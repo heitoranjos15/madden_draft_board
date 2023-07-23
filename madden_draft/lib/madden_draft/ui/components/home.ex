@@ -36,7 +36,7 @@ defmodule MaddenDraft.View.Components.Home do
       # ?s => {:tab, :search_board}
     }
 
-  def fields,
+  def fields(_),
     do:
       BoardIntegration.list_boards()
       |> Enum.map(fn draft -> draft.key end)
@@ -61,5 +61,9 @@ defmodule MaddenDraft.View.Components.Home do
     end
   end
 
-  def redirect, do: [Board, Board]
+  def redirect,
+    do: [
+      MaddenDraft.View.Components.Board,
+      MaddenDraft.View.Components.Board
+    ]
 end

@@ -10,7 +10,7 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 ## Tasks
 ## Board Players
 - [] Player List
-  - [] cursor
+  - [x] cursor
   - [] change rank
 
 - [] Player details

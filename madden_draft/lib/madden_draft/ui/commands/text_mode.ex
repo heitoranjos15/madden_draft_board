@@ -25,15 +25,13 @@ defmodule MaddenDraft.View.Command.TextMode do
     end
   end
 
-  def get_label_by_cursor(%{
-        current_tab: current_tab,
-        cursor: %{x: cursor_position},
-        form_data: form_data
-      }),
-      do: get_label_by_cursor(current_tab, cursor_position, form_data)
+  def get_label_by_cursor(model) do
+    %{
+      current_tab: current_tab,
+      form_data: form_data
+    } = model
 
-  def get_label_by_cursor(current_tab, cursor_position, form_data) do
-    label = Cursor.label_focused(current_tab, cursor_position)
+    label = Cursor.label_focused(model)
 
     label_path = [current_tab.name(), label]
 

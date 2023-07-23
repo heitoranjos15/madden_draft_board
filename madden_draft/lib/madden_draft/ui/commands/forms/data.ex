@@ -10,7 +10,7 @@ defmodule MaddenDraft.View.Command.Form.Data do
   end
 
   defp set_module_data(module) do
-    fields = module.fields
+    fields = module.fields(%{})
     name = module.name
     mapped_fields = Map.new(fields, fn field -> {field, ""} end)
     {name, mapped_fields}
