@@ -93,7 +93,7 @@ defmodule MaddenDraft.View.Command.Bindings do
 
   defp move_cursor(model, action) do
     case action do
-      :first -> Cursor.previous(model, 0)
+      :first -> Cursor.previous(model, :first)
       :previous -> Cursor.previous(model)
       :next -> Cursor.next(model)
       :last -> Cursor.next(model, :last)
