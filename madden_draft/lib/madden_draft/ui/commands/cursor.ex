@@ -1,30 +1,33 @@
 defmodule MaddenDraft.View.Command.Cursor do
-  def next(model), do: next(model, model.cursor.x + 1)
+  def next(model), do: change_position(model, Kernel.+(model.cursor.x, 1))
 
-  def next(model, :last), do: next(model, tab_field_limit(model))
+  def next(model, :last), do: change_position(model, tab_field_limit(model))
 
-  def next(model, position) do
-    cursor_pos =
-      if tab_field_limit(model) < position do
-        0
-      else
-        position
+  def previous(model), do: change_position(model, Kernel.-(model.cursor.x, 1))
+
+  def previous(model, :first), do: change_position(model, 0)
+
+  defp change_position(model, new_position) do
+    limit = tab_field_limit(model)
+    begin = 0
+
+    cursor_new_position =
+      cond do
+        limit < new_position -> begin
+        new_position < begin -> limit
+        true -> new_position
       end
 
-    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model)}}
+    %{
+      model
+      | cursor: %{x: cursor_new_position, label_focus: label_focused(model, cursor_new_position)}
+    }
   end
 
-  def previous(model), do: previous(model, model.cursor.x - 1)
+  def label_focused(model, new_position) when is_number(new_position) do
+    %{current_tab: current_tab} = model
 
-  def previous(model, position) do
-    cursor_pos =
-      if position < 0 do
-        tab_field_limit(model)
-      else
-        position
-      end
-
-    %{model | cursor: %{x: cursor_pos, label_focus: label_focused(model)}}
+    Enum.at(current_tab.fields(model), new_position)
   end
 
   def label_focused(model, tab_selected) do
