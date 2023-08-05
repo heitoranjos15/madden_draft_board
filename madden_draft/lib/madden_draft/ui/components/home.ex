@@ -16,27 +16,34 @@ defmodule MaddenDraft.View.Components.Home do
   alias MaddenDraft.View.Integration.BoardIntegration
   alias MaddenDraft.View.Helpers.Styles
   alias MaddenDraft.View.Components.AddBoard
-  alias MaddenDraft.View.Components.Board
 
   def render(model) do
-    case model.current_tab.name do
+    case model.current_tab.get_spec(:name) do
       :home -> home_page(model)
       _ -> model.current_tab.render(model)
     end
   end
 
-  def name, do: :home
+  def get_spec(attr_name), do: Map.get(spec(), attr_name)
 
-  def tabs, do: [{:home, "[H]ome"}, {:add_board, "[A]dd"}, {:search, "[S]earch"}]
+  def spec do
+    %{
+      :name => :home,
+      :tabs => [{:home, "[H]ome"}, {:add_board, "[A]dd"}, {:search, "[S]earch"}],
+      :bindings => &bindings/0,
+      :enter_key => &select/0,
+      :fields => &fields/1
+    }
+  end
 
-  def bindings,
+  defp bindings,
     do: %{
       ?h => {:tab, MaddenDraft.View.Components.Home},
       ?a => {:tab, AddBoard}
       # ?s => {:tab, :search_board}
     }
 
-  def fields(_),
+  defp fields(_),
     do:
       BoardIntegration.list_boards()
       |> Enum.map(fn draft -> draft.key end)
@@ -53,7 +60,7 @@ defmodule MaddenDraft.View.Components.Home do
     end
   end
 
-  def build_list_drafts(model) do
+  defp build_list_drafts(model) do
     for draft <- BoardIntegration.list_boards() do
       draft_name = draft.key
 
@@ -61,9 +68,11 @@ defmodule MaddenDraft.View.Components.Home do
     end
   end
 
-  def redirect,
-    do: [
-      MaddenDraft.View.Components.Board,
-      MaddenDraft.View.Components.Board
-    ]
+  defp select,
+    do:
+      {:redirect,
+       [
+         MaddenDraft.View.Components.Board,
+         MaddenDraft.View.Components.Board
+       ]}
 end

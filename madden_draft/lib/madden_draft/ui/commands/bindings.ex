@@ -11,16 +11,17 @@ defmodule MaddenDraft.View.Command.Bindings do
     {?k, {:move_cursor, :previous}},
     {?0, {:move_cursor, :first}},
     {?$, {:move_cursor, :last}},
-    {key(:enter), :enter}
+    {key(:enter), :enter_key}
   ]
 
   def run(model, key, ch) do
-    page = Map.get(model, :current_page)
+    %{current_page: page, current_tab: tab} = model
 
-    page_bindings = page.bindings()
+    page_bindings = page.get_spec(:bindings).()
+    tab_bindings = tab.get_spec(:bindings).()
 
     page_command = Map.get(page_bindings, ch)
-    tab_command = Map.get(model.current_tab.bindings(), ch)
+    tab_command = Map.get(tab_bindings, ch)
 
     cond do
       tab_command -> action_shortcut(model, tab_command)
@@ -48,7 +49,7 @@ defmodule MaddenDraft.View.Command.Bindings do
       {:tab, tab_selected} -> tab_change(model, tab_selected)
       {:move_cursor, action} -> move_cursor(model, action)
       {:page, redirect} -> page_change(model, redirect)
-      :enter -> tab_enter(model)
+      :enter_key -> tab_enter_key(model)
       :save -> Action.save(model)
       :quit -> model
       _ -> model
@@ -86,9 +87,14 @@ defmodule MaddenDraft.View.Command.Bindings do
     }
   end
 
-  defp tab_enter(model) do
-    redirect = model.current_tab.redirect
-    page_change(model, redirect)
+  defp tab_enter_key(model) do
+    action = model.current_tab.get_spec(:enter_key).()
+
+    case action do
+      {:redirect, page_to_redirect} -> page_change(model, page_to_redirect)
+      {:select} -> model
+      _ -> model
+    end
   end
 
   defp move_cursor(model, action) do

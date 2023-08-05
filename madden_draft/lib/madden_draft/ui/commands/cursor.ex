@@ -31,18 +31,28 @@ defmodule MaddenDraft.View.Command.Cursor do
   end
 
   def label_focused(model, tab_selected) do
-    Enum.at(tab_selected.fields(model), 0)
+    Enum.at(get_tab_fields(tab_selected, model), 0)
   end
 
   def label_focused(model) do
     %{current_tab: current_tab, cursor: %{x: cursor_position}} = model
 
-    Enum.at(current_tab.fields(model), cursor_position)
+    Enum.at(get_tab_fields(current_tab, model), cursor_position)
   end
 
   defp tab_field_limit(model) do
     %{current_tab: tab} = model
 
-    tab.fields(model) |> length |> Kernel.-(1)
+    get_tab_fields(tab, model) |> length |> Kernel.-(1)
+  end
+
+  defp get_tab_fields(tab, model) do
+    fields_fun = Map.get(tab.spec(), :fields, nil)
+
+    if fields_fun do
+      fields_fun.(model)
+    else
+      []
+    end
   end
 end

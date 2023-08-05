@@ -58,6 +58,15 @@ defmodule MaddenDraft.View.App do
   @magnifier "🔍"
 
   def magnifier, do: @magnifier
+
+  def run,
+    do:
+      Ratatouille.run(
+        MaddenDraft.View.App,
+        quit_events: [
+          {:key, Ratatouille.Constants.key(:ctrl_d)}
+        ]
+      )
 end
 
 # Ratatouille.run(MaddenDraft.View.App)

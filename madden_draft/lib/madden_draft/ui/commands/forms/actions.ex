@@ -9,7 +9,7 @@ defmodule MaddenDraft.View.Command.Form.Action do
   def save(model) do
     %{current_tab: tab} = model
 
-    case tab.name() do
+    case tab.get_spec(:name) do
       :add_board -> BoardIntegration.save(model)
       :add_player -> PlayerIntegration.save(model)
     end
