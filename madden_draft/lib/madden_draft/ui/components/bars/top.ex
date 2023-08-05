@@ -23,17 +23,18 @@ defmodule MaddenDraft.View.Components.Bars.Top do
   def render(model) do
     bar do
       label do
-        render_tabs(model.current_page, model.current_tab)
+        render_tabs(model)
       end
     end
   end
 
-  defp render_tabs(current_page, current_tab) do
-    tabs = current_page.tabs()
-    current_tab_name = current_tab.name()
+  defp render_tabs(model) do
+    %{current_page: page, current_tab: tab} = model
+    tab_list = page.get_spec(:tabs)
+    current_tab_name = tab.get_spec(:name)
 
     rendered_options =
-      for {key, label} <- tabs do
+      for {key, label} <- tab_list do
         if key == current_tab_name do
           text(@style_selected ++ [content: label])
         else

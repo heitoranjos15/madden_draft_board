@@ -25,6 +25,12 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
   - [x] Table players
   - [] Order by (rank, age, expected drafted)
   - [] Vertical board
+## Error message
+  Will be great to log message error on bottom bar instead of just throwing and ending the file
+- [] Bot bar accepts error message
+- [] Bot bar accepts log message (?)
+- [] message when binding has error
+- [] message when action save has error
 
 ## Done
 - [x] Player boundary

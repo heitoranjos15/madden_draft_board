@@ -17,7 +17,7 @@ defmodule MaddenDraft.View.Components.Board do
   ]
 
   def render(model) do
-    case model.current_tab.name do
+    case model.current_tab.get_spec(:name) do
       :horizontal -> horizontal_render(model)
       _ -> model.current_tab.render(model)
     end
@@ -44,16 +44,24 @@ defmodule MaddenDraft.View.Components.Board do
     end
   end
 
-  def tabs(),
-    do: [
-      {:home, "[B]ack"},
-      {:horizontal, "[H]orizontal"},
-      {:vertical, "[V]ertical"},
-      {:add_player, "[A]dd player"},
-      {:edit_player, "[E]dit player"}
-    ]
+  def get_spec(spec_name), do: Map.get(spec(), spec_name)
 
-  def bindings(),
+  def spec() do
+    %{
+      :name => :horizontal,
+      :tabs => [
+        {:home, "[B]ack"},
+        {:horizontal, "[H]orizontal"},
+        {:vertical, "[V]ertical"},
+        {:add_player, "[A]dd player"},
+        {:edit_player, "[E]dit player"}
+      ],
+      :bindings => &bindings/0,
+      :fields => &fields/1
+    }
+  end
+
+  defp bindings(),
     do: %{
       ?b =>
         {:page,
@@ -65,9 +73,7 @@ defmodule MaddenDraft.View.Components.Board do
       ?a => {:tab, AddPlayer}
     }
 
-  def name, do: :horizontal
-
-  def fields(model) do
+  defp fields(model) do
     if model.draft_selected == "" do
       [0]
     else

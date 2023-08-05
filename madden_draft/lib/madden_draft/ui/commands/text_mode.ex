@@ -33,7 +33,7 @@ defmodule MaddenDraft.View.Command.TextMode do
 
     label = Cursor.label_focused(model)
 
-    label_path = [current_tab.name(), label]
+    label_path = [current_tab.get_spec(:name), label]
 
     text = get_in(form_data, label_path)
 

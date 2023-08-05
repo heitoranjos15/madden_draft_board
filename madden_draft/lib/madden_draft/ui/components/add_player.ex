@@ -32,16 +32,25 @@ defmodule MaddenDraft.View.Components.AddPlayer do
     generate(model, @title, @form_player_fields, 3)
   end
 
-  def name, do: :add_player
+  def get_spec(spec_name), do: Map.get(spec(), spec_name)
 
-  def fields(_), do: @form_player_fields
+  def spec do
+    %{
+      :name => :add_player,
+      :bindings => &bindings/0,
+      :fields => &fields/1,
+      :save => &save/1
+    }
+  end
 
-  def bindings,
+  defp fields(_), do: @form_player_fields
+
+  defp bindings,
     do: %{?a => {:text_mode, :start}, ?c => {:text_mode, :clean}, ?w => :save, ?q => :quit}
 
-  def get_skill_fields, do: @form_skills_fields
+  defp get_skill_fields, do: @form_skills_fields
 
-  def save(model) do
+  defp save(model) do
     PlayerIntegration.save(model)
     Kernel.put_in(model, [:form_data, :status], "saved")
   end

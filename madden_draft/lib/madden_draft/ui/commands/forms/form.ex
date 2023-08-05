@@ -31,7 +31,7 @@ defmodule MaddenDraft.View.Command.Form do
               Styles.get_style(
                 :label,
                 model.cursor.label_focus === name,
-                get_in(model, [:form_data, model.current_tab.name(), name])
+                get_in(model, [:form_data, model.current_tab.get_spec(:name), name])
               )
             )
           ]
