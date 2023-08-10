@@ -40,7 +40,9 @@ defmodule MaddenDraft.Core.Board do
       board_updated = make_board_switches(board, player_board, choose)
       {:ok, board_updated}
     rescue
-      error -> {:error, error.message}
+      error ->
+        Logger.error("error", error.message)
+        {:error, error}
     end
   end
 
@@ -114,8 +116,15 @@ defmodule MaddenDraft.Core.Board do
     Enum.sort(board, &(&1.player.age < &2.player.age))
   end
 
-  def search_board_player_by(board, :rank, value), do: Enum.filter(board, &(&1.rank == value)) |> sort_board_by
-  def search_board_player_by(board, :status, value), do: Enum.filter(board, &(&1.status == value)) |> sort_board_by
-  def search_board_player_by(board, :drafted_by, value), do: Enum.filter(board, &(&1.drafted_by == value)) |> sort_board_by
-  def search_board_player_by(board, filter, value), do: Enum.filter(board, &(Map.get(&1.player, filter) == value)) |> sort_board_by
+  def search_board_player_by(board, :rank, value),
+    do: Enum.filter(board, &(&1.rank == value)) |> sort_board_by
+
+  def search_board_player_by(board, :status, value),
+    do: Enum.filter(board, &(&1.status == value)) |> sort_board_by
+
+  def search_board_player_by(board, :drafted_by, value),
+    do: Enum.filter(board, &(&1.drafted_by == value)) |> sort_board_by
+
+  def search_board_player_by(board, filter, value),
+    do: Enum.filter(board, &(Map.get(&1.player, filter) == value)) |> sort_board_by
 end

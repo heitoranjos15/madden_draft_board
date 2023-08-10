@@ -22,8 +22,8 @@ defmodule MaddenDraft.Boundary.BoardManager do
     GenServer.call(server(name), {:show})
   end
 
-  def player_rank(name, player_id, choose) do
-    GenServer.call(server(name), {:player_rank, player_id, choose})
+  def update_player_rank(name, player_id, choose) do
+    GenServer.call(server(name), {:update_player_rank, player_id, choose})
   end
 
   def show_players_filter(name, filter, value) do
@@ -93,7 +93,7 @@ defmodule MaddenDraft.Boundary.BoardManager do
     {:reply, get_player_data(state), state}
   end
 
-  def handle_call({:player_rank, player_id, choose}, _from, state) do
+  def handle_call({:update_player_rank, player_id, choose}, _from, state) do
     player_id
     |> Board.change_board_player_rank(choose, state)
     |> case do

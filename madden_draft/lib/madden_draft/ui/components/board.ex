@@ -1,6 +1,8 @@
 defmodule MaddenDraft.View.Components.Board do
   @behaviour MaddenDraft.View
 
+  import Ratatouille.Constants, only: [key: 1]
+
   require Logger
   import Ratatouille.View
   alias MaddenDraft.View.Helpers.Styles
@@ -10,7 +12,7 @@ defmodule MaddenDraft.View.Components.Board do
   @players_columns [
     "rank",
     "name",
-    "age",
+    # "age",
     "position",
     "college",
     "status"
@@ -25,7 +27,7 @@ defmodule MaddenDraft.View.Components.Board do
 
   defp horizontal_render(model) do
     %{draft_selected: draft} = model
-    board_data = get_board_players(draft)
+    board_data = BoardIntegration.get_board_players(draft)
 
     panel(Styles.default_style(:panel, draft)) do
       table do
@@ -70,7 +72,9 @@ defmodule MaddenDraft.View.Components.Board do
            MaddenDraft.View.Components.Home
          ]},
       ?h => {:tab, MaddenDraft.View.Components.Board},
-      ?a => {:tab, AddPlayer}
+      ?a => {:tab, AddPlayer},
+      key(:enter) => {:select},
+      :selection => %{?j => &down_rank/1, ?k => &up_rank/1, ?e => :edit}
     }
 
   defp fields(model) do
@@ -103,7 +107,18 @@ defmodule MaddenDraft.View.Components.Board do
     end
   end
 
-  defp get_board_players(draft) do
-    BoardIntegration.get_board_players(draft)
+  defp down_rank(model) do
+    move_player_rank(model, :down)
+  end
+
+  defp up_rank(model) do
+    move_player_rank(model, :up)
+  end
+
+  defp move_player_rank(model, new_rank) do
+    %{draft_selected: draft, cursor: %{label_focus: player_rank}} = model
+
+    BoardIntegration.update_player_rank(new_rank, player_rank, draft)
+    model
   end
 end

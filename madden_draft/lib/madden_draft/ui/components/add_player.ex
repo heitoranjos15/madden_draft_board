@@ -48,8 +48,6 @@ defmodule MaddenDraft.View.Components.AddPlayer do
   defp bindings,
     do: %{?a => {:text_mode, :start}, ?c => {:text_mode, :clean}, ?w => :save, ?q => :quit}
 
-  defp get_skill_fields, do: @form_skills_fields
-
   defp save(model) do
     PlayerIntegration.save(model)
     Kernel.put_in(model, [:form_data, :status], "saved")

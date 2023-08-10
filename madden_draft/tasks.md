@@ -8,10 +8,16 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
+- [] Refactor boundary change_order method
 ## Board Players
 - [] Player List
   - [x] cursor
-  - [] change rank
+  - [*] change rank
+    - [x] Selection action method personalized
+    - [x] Integration with boundary function to reorder player
+    - [x] Selection mode find action and executes
+    - [] Reorder ranks display
+    - [] Cursor update while reranking
 
 - [] Player details
   - [] Form
