@@ -9,11 +9,8 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 ## Tasks
 ## Board Players
-- [] Player List
-  - [x] cursor
-  - [] change rank
-
 - [] Player details
+  - [] show details based by player selected
   - [] Form
   - [] Save 
 - [] Player list details
@@ -79,6 +76,15 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 - [x] Re-organize modules and names
 - [x] Player
     - [x] Save player
+- [x] Player List
+  - [x] BUG: after lazy_players command, trying to add player by ui error happens
+  - [x] cursor
+  - [x] change rank
+    - [x] Selection action method personalized
+    - [x] Integration with boundary function to reorder player
+    - [x] Selection mode find action and executes
+    - [x] Reorder ranks display
+    - [x] Cursor update while reranking
 
    
 

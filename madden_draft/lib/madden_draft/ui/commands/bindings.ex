@@ -14,14 +14,53 @@ defmodule MaddenDraft.View.Command.Bindings do
     {key(:enter), :enter_key}
   ]
 
-  def run(model, key, ch) do
-    %{current_page: page, current_tab: tab} = model
+  @escape key(:esc)
 
+  def run(model, key, ch) do
+    %{current_page: page, current_tab: tab, status: status} = model
     page_bindings = page.get_spec(:bindings).()
     tab_bindings = tab.get_spec(:bindings).()
 
-    page_command = Map.get(page_bindings, ch)
-    tab_command = Map.get(tab_bindings, ch)
+    case status do
+      :normal -> run_bind(model, key, ch, page_bindings, tab_bindings)
+      :selection -> run_selection_bind(model, key, ch, tab_bindings)
+      _ -> model
+    end
+  end
+
+  defp run_selection_bind(model, key, ch, bindings) do
+    selection_bindings = Map.get(bindings, :selection)
+
+    command = get_bind_command(selection_bindings, key, ch)
+
+    if is_nil(command) do
+      if key == @escape do
+        %{model | status: :normal}
+      else
+        model
+      end
+    else
+      cursor_update = Map.get(command, :cursor_update)
+      action = Map.get(command, :action)
+
+      new_model =
+        if is_nil(action) do
+          model
+        else
+          action.(model)
+        end
+
+      if is_atom(cursor_update) do
+        move_cursor(new_model, cursor_update)
+      else
+        new_model
+      end
+    end
+  end
+
+  defp run_bind(model, key, ch, page_bindings, tab_bindings) do
+    page_command = get_bind_command(page_bindings, key, ch)
+    tab_command = get_bind_command(tab_bindings, key, ch)
 
     cond do
       tab_command -> action_shortcut(model, tab_command)
@@ -30,10 +69,20 @@ defmodule MaddenDraft.View.Command.Bindings do
     end
   end
 
+  defp get_bind_command(bindings, key, ch) do
+    command = Map.get(bindings, ch)
+
+    if is_nil(command) do
+      Map.get(bindings, key)
+    else
+      command
+    end
+  end
+
   defp get_global_action(model, key, ch) do
     {_, global_action_keymap} =
-      Enum.find(@global_keymaps, {nil, false}, fn {key_pressed, _} ->
-        key_pressed == key or key_pressed == ch
+      Enum.find(@global_keymaps, {nil, false}, fn {key_binding, _} ->
+        key_binding == key or key_binding == ch
       end)
 
     if global_action_keymap do
@@ -49,7 +98,7 @@ defmodule MaddenDraft.View.Command.Bindings do
       {:tab, tab_selected} -> tab_change(model, tab_selected)
       {:move_cursor, action} -> move_cursor(model, action)
       {:page, redirect} -> page_change(model, redirect)
-      :enter_key -> tab_enter_key(model)
+      {:select} -> select(model)
       :save -> Action.save(model)
       :quit -> model
       _ -> model
@@ -58,9 +107,9 @@ defmodule MaddenDraft.View.Command.Bindings do
 
   defp text_mode_action(model, action) do
     case action do
-      :start -> %{model | text_mode: true, status: :text_mode}
-      :clean -> %{model | text_mode: true, status: :text_mode}
-      :exit -> %{model | text_mode: false, status: :normal}
+      :start -> %{model | status: :text_mode}
+      :clean -> %{model | status: :text_mode}
+      :exit -> %{model | status: :normal}
       _ -> model
     end
   end
@@ -87,16 +136,6 @@ defmodule MaddenDraft.View.Command.Bindings do
     }
   end
 
-  defp tab_enter_key(model) do
-    action = model.current_tab.get_spec(:enter_key).()
-
-    case action do
-      {:redirect, page_to_redirect} -> page_change(model, page_to_redirect)
-      {:select} -> model
-      _ -> model
-    end
-  end
-
   defp move_cursor(model, action) do
     case action do
       :first -> Cursor.previous(model, :first)
@@ -104,5 +143,11 @@ defmodule MaddenDraft.View.Command.Bindings do
       :next -> Cursor.next(model)
       :last -> Cursor.next(model, :last)
     end
+  end
+
+  defp select(model) do
+    new_model = Kernel.put_in(model, [:debug], Integer.to_string(model.cursor.label_focus))
+
+    %{new_model | status: :selection}
   end
 end

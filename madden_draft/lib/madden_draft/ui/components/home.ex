@@ -12,6 +12,7 @@ defmodule MaddenDraft.View.Components.Home do
 "
 
   require Logger
+  import Ratatouille.Constants, only: [key: 1]
   import Ratatouille.View
   alias MaddenDraft.View.Integration.BoardIntegration
   alias MaddenDraft.View.Helpers.Styles
@@ -31,7 +32,6 @@ defmodule MaddenDraft.View.Components.Home do
       :name => :home,
       :tabs => [{:home, "[H]ome"}, {:add_board, "[A]dd"}, {:search, "[S]earch"}],
       :bindings => &bindings/0,
-      :enter_key => &select/0,
       :fields => &fields/1
     }
   end
@@ -39,7 +39,13 @@ defmodule MaddenDraft.View.Components.Home do
   defp bindings,
     do: %{
       ?h => {:tab, MaddenDraft.View.Components.Home},
-      ?a => {:tab, AddBoard}
+      ?a => {:tab, AddBoard},
+      key(:enter) =>
+        {:page,
+         [
+           MaddenDraft.View.Components.Board,
+           MaddenDraft.View.Components.Board
+         ]}
       # ?s => {:tab, :search_board}
     }
 
@@ -67,12 +73,4 @@ defmodule MaddenDraft.View.Components.Home do
       label(Styles.get_style(:label, model.cursor.label_focus === draft_name, draft_name))
     end
   end
-
-  defp select,
-    do:
-      {:redirect,
-       [
-         MaddenDraft.View.Components.Board,
-         MaddenDraft.View.Components.Board
-       ]}
 end

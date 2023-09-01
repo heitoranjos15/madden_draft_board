@@ -16,7 +16,7 @@ defmodule MaddenDraft.View.Command.TextMode do
   def render_text(model, message) do
     case message do
       {:event, %{key: @escape}} ->
-        %{model | text_mode: false, status: :normal}
+        %{model | status: :normal}
 
       _ ->
         {_, label_path, text} = get_label_by_cursor(model)

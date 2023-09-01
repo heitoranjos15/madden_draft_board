@@ -7,7 +7,7 @@ defmodule MaddenDraft.View.Components.Bars.Bottom do
   ]
 
   def render(model) do
-    %{current_page: page} = model
+    %{current_page: page, debug: debug, error: error, status: status} = model
     name = page.get_spec(:name)
 
     bar do
@@ -16,8 +16,18 @@ defmodule MaddenDraft.View.Components.Bars.Bottom do
         text(@style_selected ++ [content: Atom.to_string(name)])
         text(content: ">>>")
         text(content: "<<<")
-        text(@style_selected ++ [content: Atom.to_string(model.status)])
+        text(@style_selected ++ [content: Atom.to_string(status)])
         text(content: ">>>")
+
+        if debug != "" do
+          text(content: "DEBUG")
+          text(@style_selected ++ [content: debug])
+        end
+
+        if error != "" do
+          text(content: "<<<< ERROR >>>")
+          text(@style_selected ++ [content: error])
+        end
       end
     end
   end

@@ -22,8 +22,8 @@ defmodule MaddenDraft.Boundary.BoardManager do
     GenServer.call(server(name), {:show})
   end
 
-  def player_rank(name, player_id, choose) do
-    GenServer.call(server(name), {:player_rank, player_id, choose})
+  def update_player_rank(name, player_id, player_to_switch) do
+    GenServer.call(server(name), {:update_player_rank, player_id, player_to_switch})
   end
 
   def show_players_filter(name, filter, value) do
@@ -93,9 +93,9 @@ defmodule MaddenDraft.Boundary.BoardManager do
     {:reply, get_player_data(state), state}
   end
 
-  def handle_call({:player_rank, player_id, choose}, _from, state) do
-    player_id
-    |> Board.change_board_player_rank(choose, state)
+  def handle_call({:update_player_rank, player_id, rank_to_switch}, _from, state) do
+    state
+    |> Board.change_board_player_rank(player_id, rank_to_switch)
     |> case do
       {:ok, updated_board} -> {:reply, :ok, updated_board}
       _ -> {:reply, :error, state}
@@ -134,12 +134,12 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   defp get_player_data(state) when length(state) > 0 do
-    set_player_data_fun = fn board_player ->
+    state
+    |> Enum.map(fn board_player ->
       player_data = PlayerManager.find_player(:id, board_player.player_id)
       Map.put(board_player, :player, player_data)
-    end
-
-    Enum.map(state, set_player_data_fun)
+    end)
+    |> Enum.sort(&(&1.rank < &2.rank))
   end
 
   defp get_player_data(_) do

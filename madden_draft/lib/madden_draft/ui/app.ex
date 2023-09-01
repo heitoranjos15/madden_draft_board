@@ -11,14 +11,17 @@ defmodule MaddenDraft.View.App do
     Home
   }
 
-  alias MaddenDraft.View.Command.TextMode
+  alias MaddenDraft.View.Command.{
+    TextMode,
+    Select
+  }
+
   alias MaddenDraft.View.Command.Form.Data
 
   def init(_context) do
     model = %{
       current_tab: Home,
       current_page: Home,
-      text_mode: false,
       form_data: %{},
       text_value: "",
       cursor: %{
@@ -26,6 +29,8 @@ defmodule MaddenDraft.View.App do
         x: 0,
         label_focus: :none
       },
+      debug: "",
+      error: "",
       draft_selected: "",
       status: :normal
     }
@@ -35,7 +40,7 @@ defmodule MaddenDraft.View.App do
 
   def update(model, msg) do
     case {model, msg} do
-      {%{text_mode: true}, message} ->
+      {%{status: :text_mode}, message} ->
         TextMode.render_text(model, message)
 
       {_, {:event, %{key: key, ch: ch}}} ->

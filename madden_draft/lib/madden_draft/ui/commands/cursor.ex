@@ -27,7 +27,7 @@ defmodule MaddenDraft.View.Command.Cursor do
   def label_focused(model, new_position) when is_number(new_position) do
     %{current_tab: current_tab} = model
 
-    Enum.at(current_tab.fields(model), new_position)
+    Enum.at(get_tab_fields(current_tab, model), new_position)
   end
 
   def label_focused(model, tab_selected) do
