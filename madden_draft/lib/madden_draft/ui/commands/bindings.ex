@@ -3,7 +3,6 @@ defmodule MaddenDraft.View.Command.Bindings do
   require Logger
   alias MaddenDraft.View.Command.Cursor
   alias MaddenDraft.View.Command.Form.Action
-  alias MaddenDraft.View.Helpers.ActionHelper
 
   @global_keymaps [
     {key(:tab), {:move_cursor, :next}},
@@ -15,19 +14,68 @@ defmodule MaddenDraft.View.Command.Bindings do
     {key(:enter), :enter_key}
   ]
 
-  def run(model, key, ch) do
-    %{current_page: page, current_tab: tab} = model
+  @escape key(:esc)
 
+  def run(model, key, ch) do
+    %{current_page: page, current_tab: tab, status: status} = model
     page_bindings = page.get_spec(:bindings).()
     tab_bindings = tab.get_spec(:bindings).()
 
-    page_command = ActionHelper.get_action_by_key_pressed(page_bindings, key, ch)
-    tab_command = ActionHelper.get_action_by_key_pressed(tab_bindings, key, ch)
+    case status do
+      :normal -> run_bind(model, key, ch, page_bindings, tab_bindings)
+      :selection -> run_selection_bind(model, key, ch, tab_bindings)
+      _ -> model
+    end
+  end
+
+  defp run_selection_bind(model, key, ch, bindings) do
+    selection_bindings = Map.get(bindings, :selection)
+
+    command = get_bind_command(selection_bindings, key, ch)
+
+    if is_nil(command) do
+      if key == @escape do
+        %{model | status: :normal}
+      else
+        model
+      end
+    else
+      cursor_update = Map.get(command, :cursor_update)
+      action = Map.get(command, :action)
+
+      new_model =
+        if is_nil(action) do
+          model
+        else
+          action.(model)
+        end
+
+      if is_atom(cursor_update) do
+        move_cursor(new_model, cursor_update)
+      else
+        new_model
+      end
+    end
+  end
+
+  defp run_bind(model, key, ch, page_bindings, tab_bindings) do
+    page_command = get_bind_command(page_bindings, key, ch)
+    tab_command = get_bind_command(tab_bindings, key, ch)
 
     cond do
       tab_command -> action_shortcut(model, tab_command)
       page_command -> action_shortcut(model, page_command)
       true -> get_global_action(model, key, ch)
+    end
+  end
+
+  defp get_bind_command(bindings, key, ch) do
+    command = Map.get(bindings, ch)
+
+    if is_nil(command) do
+      Map.get(bindings, key)
+    else
+      command
     end
   end
 

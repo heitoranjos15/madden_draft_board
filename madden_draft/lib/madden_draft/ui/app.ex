@@ -43,9 +43,6 @@ defmodule MaddenDraft.View.App do
       {%{status: :text_mode}, message} ->
         TextMode.render_text(model, message)
 
-      {%{status: :selection}, message} ->
-        Select.action(model, message)
-
       {_, {:event, %{key: key, ch: ch}}} ->
         Bindings.run(model, key, ch)
 

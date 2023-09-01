@@ -74,7 +74,11 @@ defmodule MaddenDraft.View.Components.Board do
       ?h => {:tab, MaddenDraft.View.Components.Board},
       ?a => {:tab, AddPlayer},
       key(:enter) => {:select},
-      :selection => %{?j => &down_rank/1, ?k => &up_rank/1, ?e => :edit}
+      :selection => %{
+        ?j => %{:action => &down_rank/1, :cursor_update => :next},
+        ?k => %{:action => &up_rank/1, :cursor_update => :previous},
+        ?e => :edit
+      }
     }
 
   defp fields(model) do
@@ -84,6 +88,7 @@ defmodule MaddenDraft.View.Components.Board do
       model.draft_selected
       |> BoardIntegration.get_board_players()
       |> Enum.map(fn player -> player.rank end)
+      |> Enum.sort(&(&1 < &2))
     end
   end
 
@@ -107,18 +112,20 @@ defmodule MaddenDraft.View.Components.Board do
     end
   end
 
-  defp down_rank(model) do
-    move_player_rank(model, :down)
-  end
+  defp down_rank(model), do: move_player_rank(model, :down)
 
-  defp up_rank(model) do
-    move_player_rank(model, :up)
-  end
+  defp up_rank(model), do: move_player_rank(model, :up)
 
   defp move_player_rank(model, new_rank) do
     %{draft_selected: draft, cursor: %{label_focus: player_rank}} = model
 
-    BoardIntegration.update_player_rank(new_rank, player_rank, draft)
+    choose =
+      case new_rank do
+        :down -> Kernel.+(player_rank, 1)
+        :up -> Kernel.-(player_rank, 1)
+      end
+
+    BoardIntegration.update_player_rank(choose, player_rank, draft)
     model
-  end
+ end
 end

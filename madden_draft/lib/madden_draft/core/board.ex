@@ -33,75 +33,37 @@ defmodule MaddenDraft.Core.Board do
     end
   end
 
-  def change_board_player_rank(player, choose, board) do
-    player_board = find_board_player_by(board, :player_id, player)
+  def change_board_player_rank(board, player_rank, rank_to_switch) do
+    player = find_board_player_by(board, :player_id, player_rank)
+    player_to_switch = find_board_player_by(board, :player_id, rank_to_switch)
 
-    try do
-      board_updated = make_board_switches(board, player_board, choose)
-      {:ok, board_updated}
-    rescue
-      error ->
-        Logger.error("error", error.message)
-        {:error, error}
+    if !is_nil(player) and !is_nil(player_to_switch) do
+      try do
+        board_updated = switch_board_players_ranks(board, player_rank, rank_to_switch)
+        {:ok, board_updated}
+      rescue
+        error ->
+          Logger.error("error", error.message)
+          {:error, error}
+      end
     end
   end
 
-  defp make_board_switches(board, player_board, choose) do
-    player_choose_rank = player_board.rank
-
-    valid = validate_choose(choose, length(board), player_choose_rank)
-
-    if not valid do
-      raise ArgumentError, "invalid player choose"
-    end
-
-    player_switch_rank = get_player_switch_rank(choose, player_choose_rank)
-
-    switch_board_player_ranks(board, player_choose_rank, player_switch_rank)
-  end
-
-  defp validate_choose(choose, board_limit, player_rank) do
-    choose_up = choose == :up
-    choose_down = choose == :down
-    top_ranked = player_rank == 0
-    last_ranked = player_rank == board_limit
-
-    cond do
-      top_ranked and choose_up -> false
-      last_ranked and choose_down -> false
-      true -> true
-    end
-  end
-
-  defp switch_board_player_ranks(board, player_choose_rank, player_switch_rank) do
+  defp switch_board_players_ranks(board, player_rank, rank_to_switch) do
     board
     |> Enum.map(fn player_board ->
       cond do
-        player_board.rank == player_choose_rank ->
-          Map.put(player_board, :rank, player_switch_rank)
+        player_board.rank == player_rank ->
+          Map.put(player_board, :rank, rank_to_switch)
 
-        player_board.rank == player_switch_rank ->
-          Map.put(player_board, :rank, player_choose_rank)
+        player_board.rank == rank_to_switch ->
+          Map.put(player_board, :rank, player_rank)
 
         true ->
           player_board
       end
     end)
     |> sort_board_by
-  end
-
-  defp get_player_switch_rank(choose, player_rank) do
-    rank =
-      case choose do
-        :up -> player_rank - 1
-        :down -> player_rank + 1
-      end
-
-    if rank < 0 do
-      raise ArgumentError, "invalid player rank"
-    end
-
-    rank
   end
 
   defp find_board_player_by(board, :player_id, id) do
