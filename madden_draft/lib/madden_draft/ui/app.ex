@@ -11,10 +11,7 @@ defmodule MaddenDraft.View.App do
     Home
   }
 
-  alias MaddenDraft.View.Command.{
-    TextMode,
-    Select
-  }
+  alias MaddenDraft.View.Command.TextMode
 
   alias MaddenDraft.View.Command.Form.Data
 
@@ -69,7 +66,7 @@ defmodule MaddenDraft.View.App do
       Ratatouille.run(
         MaddenDraft.View.App,
         quit_events: [
-          {:key, Ratatouille.Constants.key(:ctrl_d)}
+          {:key, Ratatouille.Constants.key(:ctrl_q)}
         ]
       )
 end

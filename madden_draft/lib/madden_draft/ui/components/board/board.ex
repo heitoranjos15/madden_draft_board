@@ -5,6 +5,7 @@ defmodule MaddenDraft.View.Components.Board do
 
   require Logger
   import Ratatouille.View
+  alias MaddenDraft.View.Components.Board.PlayerDetails
   alias MaddenDraft.View.Helpers.Styles
   alias MaddenDraft.View.Integration.BoardIntegration
   alias MaddenDraft.View.Components.AddPlayer
@@ -29,19 +30,25 @@ defmodule MaddenDraft.View.Components.Board do
     %{draft_selected: draft} = model
     board_data = BoardIntegration.get_board_players(draft)
 
-    panel(Styles.default_style(:panel, draft)) do
-      table do
-        table_row do
-          for column <- @players_columns do
-            table_cell(content: column)
+    row do
+      column(size: 12) do
+        panel(Styles.default_style(:panel, draft)) do
+          table do
+            table_row do
+              for column <- @players_columns do
+                table_cell(content: column)
+              end
+            end
+
+            if is_list(board_data) do
+              players_row(model, board_data)
+            else
+              label(content: "Board empty !")
+            end
           end
         end
 
-        if is_list(board_data) do
-          players_row(model, board_data)
-        else
-          label(content: "Board empty !")
-        end
+          PlayerDetails.render(model)
       end
     end
   end
@@ -127,5 +134,5 @@ defmodule MaddenDraft.View.Components.Board do
 
     BoardIntegration.update_player_rank(choose, player_rank, draft)
     model
- end
+  end
 end

@@ -18,6 +18,10 @@ defmodule MaddenDraft.View.Integration.BoardIntegration do
     BoardManager.show(draft_name)
   end
 
+  def get_board_player(draft, player_rank) do
+    BoardManager.show_players_filter(draft, :rank, player_rank)
+  end
+
   def update_player_rank(choose, player_rank, draft_name) do
     BoardManager.update_player_rank(draft_name, player_rank, choose)
   end

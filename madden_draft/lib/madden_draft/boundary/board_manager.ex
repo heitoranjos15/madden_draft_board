@@ -26,12 +26,16 @@ defmodule MaddenDraft.Boundary.BoardManager do
     GenServer.call(server(name), {:update_player_rank, player_id, player_to_switch})
   end
 
-  def show_players_filter(name, filter, value) do
-    GenServer.call(server(name), {:show_players_filter, filter, value})
+  def filter_board(name, filter, value) do
+    GenServer.call(server(name), {:filter_board, filter, value})
   end
 
-  def player_drafted(name, player_id, drafted_by) do
-    GenServer.call(server(name), {:player_drafted, player_id, drafted_by})
+  def filter_board_by_players(name, filter, value) do
+    GenServer.call(server(name), {:filter_board_by_players, filter, value})
+  end
+
+  def edit_board(name, player_id, value) do
+    GenServer.call(server(name), {:edit_board, player_id, value})
   end
 
   def init(state) do
@@ -93,6 +97,23 @@ defmodule MaddenDraft.Boundary.BoardManager do
     {:reply, get_player_data(state), state}
   end
 
+  def handle_call({:filter_board, filter, value}, _from, state) do
+    board_filtered = state |> Board.filter_board(filter, value) |> get_player_data()
+    {:reply, board_filtered, state}
+  end
+
+  def handle_call({:filter_board_by_players, filter, value}, _from, state) do
+    players =
+      get_player_data(state)
+      |> Board.filter_board_by_players(filter, value)
+
+    {:reply, players, state}
+  end
+
+  def handle_call({:edit_board, player_id, value}, _from, state) do
+    {:reply, :ok, Board.update_board(state, player_id, value)}
+  end
+
   def handle_call({:update_player_rank, player_id, rank_to_switch}, _from, state) do
     state
     |> Board.change_board_player_rank(player_id, rank_to_switch)
@@ -100,27 +121,6 @@ defmodule MaddenDraft.Boundary.BoardManager do
       {:ok, updated_board} -> {:reply, :ok, updated_board}
       _ -> {:reply, :error, state}
     end
-  end
-
-  def handle_call({:show_players_filter, filter, value}, _from, state) do
-    players =
-      get_player_data(state)
-      |> Board.search_board_player_by(filter, value)
-
-    {:reply, players, state}
-  end
-
-  def handle_call({:player_drafted, player_id, drafted_by}, _from, state) do
-    updated_board =
-      state
-      |> Enum.find_index(fn player -> player.player_id == player_id end)
-      |> (&List.replace_at(
-            state,
-            &1,
-            Map.merge(Enum.at(state, &1), %{drafted_by: drafted_by, status: :drafted})
-          )).()
-
-    {:reply, :ok, updated_board}
   end
 
   defp find_or_create_player(player_attributes) do
@@ -134,12 +134,10 @@ defmodule MaddenDraft.Boundary.BoardManager do
   end
 
   defp get_player_data(state) when length(state) > 0 do
-    state
-    |> Enum.map(fn board_player ->
-      player_data = PlayerManager.find_player(:id, board_player.player_id)
+    Enum.map(state, fn board_player ->
+      player_data = PlayerManager.find_player(:id, Map.get(board_player, :player_id))
       Map.put(board_player, :player, player_data)
     end)
-    |> Enum.sort(&(&1.rank < &2.rank))
   end
 
   defp get_player_data(_) do

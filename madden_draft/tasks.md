@@ -8,6 +8,13 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
+## Backend
+- [] Refactor core code, specially board
+- [] Refactor boundary -- maybe
+- [] Build in docker
+- [] Save in database
+- [] Restore state from database
+
 ## Board Players
 - [] Player details
   - [] show details based by player selected
@@ -22,6 +29,18 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
   - [x] Table players
   - [] Order by (rank, age, expected drafted)
   - [] Vertical board
+
+
+## Refactor Bindings
+The real thing here is to separate by actions mode for each file
+Like GoLang create a module bindings, then files: selection, text and normal for bindings
+The reason for that is decentralization, if continues this way will have a lot of methods inside a file
+Project model: https://github.com/dynamo/dynamo/tree/master
+- [] Binding module
+- [] Selection
+- [] Text
+- [] Normal
+
 ## Error message
   Will be great to log message error on bottom bar instead of just throwing and ending the file
 - [] Bot bar accepts error message

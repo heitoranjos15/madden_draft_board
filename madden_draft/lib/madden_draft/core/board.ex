@@ -34,8 +34,8 @@ defmodule MaddenDraft.Core.Board do
   end
 
   def change_board_player_rank(board, player_rank, rank_to_switch) do
-    player = find_board_player_by(board, :player_id, player_rank)
-    player_to_switch = find_board_player_by(board, :player_id, rank_to_switch)
+    player = find_board_player(board, :player_id, player_rank)
+    player_to_switch = find_board_player(board, :player_id, rank_to_switch)
 
     if !is_nil(player) and !is_nil(player_to_switch) do
       try do
@@ -50,24 +50,27 @@ defmodule MaddenDraft.Core.Board do
   end
 
   defp switch_board_players_ranks(board, player_rank, rank_to_switch) do
+    player1 = board |> Enum.at(player_rank) |> Map.put(:rank, rank_to_switch)
+    player2 = board |> Enum.at(rank_to_switch) |> Map.put(:rank, player_rank)
+
     board
-    |> Enum.map(fn player_board ->
-      cond do
-        player_board.rank == player_rank ->
-          Map.put(player_board, :rank, rank_to_switch)
-
-        player_board.rank == rank_to_switch ->
-          Map.put(player_board, :rank, player_rank)
-
-        true ->
-          player_board
-      end
-    end)
+    |> List.replace_at(rank_to_switch, player1)
+    |> List.replace_at(player_rank, player2)
     |> sort_board_by
   end
 
-  defp find_board_player_by(board, :player_id, id) do
-    Enum.find(board, &(&1.player_id == id))
+  def filter_board(board, by, value),
+    do: Enum.filter(board, &(Map.get(&1, by) == value)) |> sort_board_by
+
+  def filter_board_by_players(board, by, value),
+    do: Enum.filter(board, &(Map.get(&1.player, by) == value)) |> sort_board_by
+
+  def update_board(state, player_id, value) do
+    board_idx = Enum.find_index(state, &(&1.player_id == player_id))
+    board = Enum.at(state, board_idx)
+    player_edited = Map.merge(board, value)
+
+    List.replace_at(state, board_idx, player_edited)
   end
 
   def sort_board_by(board) do
@@ -78,15 +81,7 @@ defmodule MaddenDraft.Core.Board do
     Enum.sort(board, &(&1.player.age < &2.player.age))
   end
 
-  def search_board_player_by(board, :rank, value),
-    do: Enum.filter(board, &(&1.rank == value)) |> sort_board_by
-
-  def search_board_player_by(board, :status, value),
-    do: Enum.filter(board, &(&1.status == value)) |> sort_board_by
-
-  def search_board_player_by(board, :drafted_by, value),
-    do: Enum.filter(board, &(&1.drafted_by == value)) |> sort_board_by
-
-  def search_board_player_by(board, filter, value),
-    do: Enum.filter(board, &(Map.get(&1.player, filter) == value)) |> sort_board_by
+  defp find_board_player(board, by, value) do
+    Enum.find(board, &(Map.get(&1, by) == value))
+  end
 end

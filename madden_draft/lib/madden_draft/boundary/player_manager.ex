@@ -52,6 +52,11 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     {:reply, player, state}
   end
 
+  def handle_call({:filter_players, by, value}, _from, state) do
+    players = Enum.filter(state, &(Map.get(&1, by) == value))
+    {:reply, players, state}
+  end
+
   def handle_call({:update_player, id, attribute, value}, _from, state) do
     player =
       Enum.at(state, id)

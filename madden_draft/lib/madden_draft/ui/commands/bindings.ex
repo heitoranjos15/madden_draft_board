@@ -15,6 +15,7 @@ defmodule MaddenDraft.View.Command.Bindings do
   ]
 
   @escape key(:esc)
+  @enter_key key(:enter)
 
   def run(model, key, ch) do
     %{current_page: page, current_tab: tab, status: status} = model
@@ -34,7 +35,7 @@ defmodule MaddenDraft.View.Command.Bindings do
     command = get_bind_command(selection_bindings, key, ch)
 
     if is_nil(command) do
-      if key == @escape do
+      if key == @escape || key == @enter_key do
         %{model | status: :normal}
       else
         model
@@ -98,7 +99,7 @@ defmodule MaddenDraft.View.Command.Bindings do
       {:tab, tab_selected} -> tab_change(model, tab_selected)
       {:move_cursor, action} -> move_cursor(model, action)
       {:page, redirect} -> page_change(model, redirect)
-      {:select} -> select(model)
+      {:select} -> select_mode(model)
       :save -> Action.save(model)
       :quit -> model
       _ -> model
@@ -145,7 +146,7 @@ defmodule MaddenDraft.View.Command.Bindings do
     end
   end
 
-  defp select(model) do
+  defp select_mode(model) do
     new_model = Kernel.put_in(model, [:debug], Integer.to_string(model.cursor.label_focus))
 
     %{new_model | status: :selection}
