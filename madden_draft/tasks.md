@@ -8,6 +8,14 @@ Then I'll rank they in my board so, in the day of draft I'll have my own board.
 
 
 ## Tasks
+## Backend
+- [] Refactor player boundary, set logic to find and edit on core
+- [] Build in docker
+- [] Save in database
+- [] Restore state from database
+- [] Remove rank logic from board, work only with indexes, the right order needs to come from db or the initial_state
+- [x] Refactor core code, specially board
+
 ## Board Players
 - [] Player details
   - [] show details based by player selected
