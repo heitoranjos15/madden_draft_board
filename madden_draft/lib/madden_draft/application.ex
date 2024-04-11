@@ -8,6 +8,7 @@ defmodule MaddenDraft.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      MaddenDraft.Database.Repo,
       # Starts a worker by calling: MaddenDraft.Worker.start_link(arg)
       # {MaddenDraft.Worker, arg}
       MaddenDraft.Boundary.PlayerManager,

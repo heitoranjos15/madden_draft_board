@@ -25,7 +25,12 @@ defmodule MaddenDraft.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:ratatouille, "~> 0.5.0"}
+      {:ratatouille, "~> 0.5.0"},
+      {:ecto, "~> 3.10"},
+      {:jason, "~> 1.0"},
+      {:ecto_sql, "~> 3.11"},
+      {:postgrex, "~> 0.17"},
+      {:dotenvy, "~> 0.8.0"}
     ]
   end
 end

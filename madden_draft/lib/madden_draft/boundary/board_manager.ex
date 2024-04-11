@@ -3,19 +3,24 @@ defmodule MaddenDraft.Boundary.BoardManager do
 
   require Logger
 
+  import Ecto.Query, only: [from: 2]
+
+  alias MaddenDraft.Database.Schema.Board, as: Schema
   alias MaddenDraft.Core.Board
   alias MaddenDraft.Boundary.PlayerManager
+  alias MaddenDraft.Database.Repo
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, [], name: server(name))
+    saved_state = Repo.one(from b in Schema, where: b.name == ^name, select: b.players, limit: 1)
+    GenServer.start_link(__MODULE__, saved_state, name: server(name))
   end
 
   def lazy_players(name) do
-    GenServer.cast(server(name), {:lazy_players})
+    GenServer.cast(server(name), {:lazy_players, name})
   end
 
   def add_player_to_board(name, player) do
-    GenServer.call(server(name), {:add_player_to_board, player})
+    GenServer.call(server(name), {:add_player_to_board, player, name})
   end
 
   def show(name) do
@@ -38,7 +43,7 @@ defmodule MaddenDraft.Boundary.BoardManager do
     {:ok, state}
   end
 
-  def handle_cast({:lazy_players}, _state) do
+  def handle_cast({:lazy_players, board_name}, _state) do
     players =
       [
         %{name: "Trey Lance", age: 19, position: "QB", round_expected: 1, college: "NDSU"},
@@ -69,14 +74,15 @@ defmodule MaddenDraft.Boundary.BoardManager do
       |> (fn {players, _acc} -> players end).()
       |> Enum.map(fn player ->
         case Board.new(player) do
-          {:ok, board_player} -> board_player
+          {:ok, board_player} ->
+            board_player
         end
       end)
 
     {:noreply, players}
   end
 
-  def handle_call({:add_player_to_board, player}, _from, state) do
+  def handle_call({:add_player_to_board, player, board_name}, _from, state) do
     find_or_create_player(player)
 
     attributes = %{player_id: length(state), rank: length(state), status: :available}
@@ -84,8 +90,14 @@ defmodule MaddenDraft.Boundary.BoardManager do
     attributes
     |> Board.new()
     |> case do
-      {:ok, board_player} -> {:reply, :ok, [board_player | state]}
-      _ -> {:reply, :ok, state}
+      {:ok, board_player} ->
+        board = Repo.get_by(Schema, name: board_name)
+        board = Ecto.Changeset.change(board, players: board_player_to_schema([board_player | state]))
+        Repo.update(board)
+        {:reply, :ok, [board_player | state]}
+
+      _ ->
+        {:reply, :ok, state}
     end
   end
 
@@ -144,6 +156,10 @@ defmodule MaddenDraft.Boundary.BoardManager do
 
   defp get_player_data(_) do
     []
+  end
+
+  defp board_player_to_schema(state) do
+    Enum.map(state, fn board_player -> %{id: board_player.player_id, rank: board_player.rank} end)
   end
 
   defp server(pid) when is_pid(pid), do: pid

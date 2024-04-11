@@ -5,6 +5,8 @@ defmodule MaddenDraft.Boundary.DraftSupervisor do
   use DynamicSupervisor
 
   alias MaddenDraft.Boundary.BoardManager
+  alias MaddenDraft.Database.Repo
+  alias MaddenDraft.Database.Schema.Board, as: Schema
 
   def start_link(opts) do
     DynamicSupervisor.start_link(__MODULE__, opts, name: __MODULE__)
@@ -17,6 +19,7 @@ defmodule MaddenDraft.Boundary.DraftSupervisor do
       restart: :transient
     }
 
+    Repo.insert!(board_to_schema(name))
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 
@@ -35,5 +38,13 @@ defmodule MaddenDraft.Boundary.DraftSupervisor do
 
       %{pid: board_pid, key: key}
     end)
+  end
+
+  def board_to_schema(name) do
+    %Schema{
+      name: name,
+      status: "active",
+      players: [%{}]
+    }
   end
 end
