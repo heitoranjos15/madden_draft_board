@@ -2,7 +2,10 @@ defmodule MaddenDraft.Boundary.PlayerManager do
   use GenServer
   require Logger
 
+  alias Ecto.Adapter.Schema
+  alias MaddenDraft.Database.Schema.Player, as: Schema
   alias MaddenDraft.Core.Player
+  alias MaddenDraft.Database.Repo
 
   def start_link(opts \\ []) do
     state = opts[:players] || []
@@ -36,6 +39,7 @@ defmodule MaddenDraft.Boundary.PlayerManager do
     |> (&Player.new(length(state), &1)).()
     |> case do
       {:ok, %Player{} = player} ->
+        # Repo.insert!(player_to_schema(player))
         {:reply, player, [player | state]}
 
       error ->
@@ -61,5 +65,17 @@ defmodule MaddenDraft.Boundary.PlayerManager do
       {:ok, player} -> {:reply, player, List.replace_at(state, id, player)}
       error -> {:reply, error, state}
     end
+  end
+
+
+  defp player_to_schema(player) do
+    %Schema{
+      name: player.name,
+      age: player.age,
+      height: player.height,
+      skills: player.skills,
+      weight: player.weight,
+      college: player.college
+    }
   end
 end
